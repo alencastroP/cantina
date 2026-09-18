@@ -1,6 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "cantina-web",
+  // Tem que bater com o nome do projeto no dashboard Cloudflare ("cantina",
+  // criado quando o repo foi conectado). O CI do Workers Builds força esse
+  // nome na hora de publicar, ignorando o que estiver aqui — mas o binding
+  // WORKER_SELF_REFERENCE abaixo usa este campo pra saber em quem apontar,
+  // então os dois precisam concordar.
+  "name": "cantina",
   "main": ".open-next/worker.js",
   // Compatibilidade mínima exigida pelo adaptador (nodejs_compat + fetch
   // restrito a rotas públicas). Atualize a data periodicamente — não precisa
@@ -13,7 +18,7 @@
   },
   // Usado pelo OpenNext para chamadas internas (ex.: revalidação) sem sair
   // para a rede pública.
-  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cantina-web" }],
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cantina" }],
 
   // Variáveis públicas. Segredos (nenhum aqui hoje) vão por `wrangler secret
   // put` ou pelas Environment Variables do painel do Cloudflare, nunca aqui.
