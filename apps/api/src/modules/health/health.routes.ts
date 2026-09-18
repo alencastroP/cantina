@@ -26,6 +26,10 @@ healthRouter.get(
       status: 'ok',
       uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
       timestamp: new Date().toISOString(),
+      // Injetado automaticamente pelo Render — serve pra confirmar, sem
+      // dúvida, qual commit está de fato no ar (útil quando o dashboard diz
+      // "Deployed" mas o comportamento não bate com o código daquele commit).
+      commit: process.env.RENDER_GIT_COMMIT ?? null,
     }),
   }),
 );
