@@ -186,7 +186,14 @@ async function main(): Promise<void> {
   const simulated = simulation.channels.find((row) => row.channelId === channel.id);
   // 700 − 23% = 539 líquido; 539 − 32 de custo = 507 de margem.
   check('margem no canal = 507 centavos', simulated?.marginCents === 507, `veio ${simulated?.marginCents}`);
-  check('sugere preço para a margem-alvo', (simulated?.suggestedPriceCents ?? 0) > 700);
+  // A margem a 700 já é ~94% (507/539) — bem acima do alvo de 50%. Pra
+  // chegar em 50% sobre a receita líquida o preço CAI, não sobe: receita
+  // líquida alvo = 2×32 = 64; preço = 64 ÷ 0,77 (23% de comissão) ≈ 83.
+  check(
+    'sugere preço para a margem-alvo',
+    simulated?.suggestedPriceCents === 83,
+    `veio ${simulated?.suggestedPriceCents}`,
+  );
 
   step('5. Cliente e pedido — reserva e baixa de estoque (D14)');
   const customer = await api<Id & { name: string }>('POST', '/customers', {

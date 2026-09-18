@@ -178,9 +178,18 @@ export async function salesGrouped(
     })
     .from(ordersUnified)
     .where(within(ordersUnified.completedAt, range))
-    .groupBy(column)
-    // Série temporal se lê em ordem cronológica; ranking, do maior para o menor.
-    .orderBy(groupBy === 'day' ? sql`${column} asc` : sql`${revenue} desc`);
+    // Por POSIÇÃO da coluna no select, não repetindo a expressão de `column`.
+    // No caso 'day', `column` embute o parâmetro `timeZone` — cada vez que o
+    // mesmo fragmento SQL é interpolado de novo (aqui e no order by), o
+    // Postgres gera um `$N` diferente para ele, mesmo com o mesmo valor. Pra
+    // validar o GROUP BY ele compara a árvore da expressão do select com a
+    // do group by, e `$1 ≠ $4` mesmo ligados ao mesmo argumento — a query
+    // quebra com "must appear in the GROUP BY clause". Por posição (1 = key),
+    // o problema não existe.
+    .groupBy(sql`1`)
+    // Série temporal se lê em ordem cronológica; ranking, do maior para o
+    // menor (3 = revenueCents).
+    .orderBy(groupBy === 'day' ? sql`1 asc` : sql`3 desc`);
 
   return rows.map((row) => ({
     key: String(row.key ?? ''),

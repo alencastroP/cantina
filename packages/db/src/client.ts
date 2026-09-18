@@ -3,6 +3,23 @@ import pg from 'pg';
 
 import * as schema from './schema/index';
 
+/**
+ * Postgres NUMERIC (OID 1700) volta do driver como STRING por padrão — é
+ * assim que o `pg` evita perder precisão em valores arbitrariamente grandes.
+ *
+ * As colunas `qty`/`unitCost`/`percent` (schema/_columns.ts) pedem `mode:
+ * 'number'` ao Drizzle, e isso converte certo quando a coluna é lida direto.
+ * Mas em expressões `sql<number>\`coalesce(...)\`` (agregações, somas) o
+ * Drizzle só repassa o que o driver devolveu — o `<number>` do TypeScript é
+ * só o tipo, não converte nada em runtime. Sem isso, `GET /supplies/:id`
+ * devolvia `qtyOnHand: "5000.0000"` (string) em vez de `5000`.
+ *
+ * Registrar aqui, uma vez, corrige a classe inteira — nenhum valor do
+ * domínio (gramas, percentuais, custo por grama) chega perto do limite de
+ * precisão de um float de 64 bits.
+ */
+pg.types.setTypeParser(pg.types.builtins.NUMERIC, (value: string) => parseFloat(value));
+
 export type Schema = typeof schema;
 export type Database = NodePgDatabase<Schema>;
 export type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0];
