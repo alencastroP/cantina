@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------------------
+# Render — API da Cantina como Web Service (Docker).
+#
+# O Dockerfile mora em apps/api/ mas copia a partir da RAIZ do monorepo
+# (package-lock.json, packages/*), então o contexto de build é `.`.
+#
+# Migrations e políticas de RLS NÃO rodam no boot (§3 do PLAN.md): rode
+# `npm run db:setup` da sua máquina apontando para o banco antes do primeiro
+# deploy, e `npm run db:migrate && npm run db:rls` a cada deploy que traga
+# migration nova.
+#
+# Valores com `sync: false` o Render pergunta na criação do blueprint — é onde
+# entram os segredos, que não podem morar neste arquivo.
+# ---------------------------------------------------------------------------
+
+services:
+  - type: web
+    name: cantina-api
+    runtime: docker
+    # Mesma região do Postgres. Neon em us-east + Render em ohio/virginia evita
+    # ~120ms de ida e volta por query — e cada request faz várias.
+    region: ohio
+    plan: free
+    branch: main
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    # `/health` responde sem tocar no banco, de propósito: o balanceador não
+    # deve derrubar a instância porque o Postgres piscou. Para checar o banco,
+    # `/api/v1/health/ready` — manualmente, não aqui.
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+
+      # A API escuta em API_PORT; o Render roteia para PORT. Os dois iguais ao
+      # EXPOSE do Dockerfile para não sobrar ambiguidade.
+      - key: PORT
+        value: 3333
+      - key: API_PORT
+        value: 3333
+
+      - key: API_URL
+        sync: false # https://cantina-api.onrender.com (ou seu domínio)
+      - key: WEB_URL
+        sync: false # https://SEUDOMINIO.com
+      - key: ROOT_DOMAIN
+        sync: false # SEUDOMINIO.com — é ele que libera o CORS dos subdomínios
+
+      - key: DATABASE_URL
+        sync: false # papel cantina_app, sujeito a RLS
+      - key: DATABASE_ADMIN_URL
+        sync: false # papel com BYPASSRLS
+      - key: DATABASE_POOL_MAX
+        value: 10
+
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_TTL_SECONDS
+        value: 900
+      - key: REFRESH_TOKEN_TTL_DAYS
+        value: 30
+
+      # Em produção a API se recusa a subir sem ASAAS_API_KEY — sem gateway ela
+      # ativaria assinaturas sem cobrar nada.
+      - key: ASAAS_API_KEY
+        sync: false
+      - key: ASAAS_BASE_URL
+        value: https://api-sandbox.asaas.com/v3
+      # Única autenticação de /webhooks/asaas. Tem que ser igual ao cadastrado
+      # no painel do Asaas.
+      - key: ASAAS_WEBHOOK_TOKEN
+        sync: false
