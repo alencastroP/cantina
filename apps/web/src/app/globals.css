@@ -1,0 +1,693 @@
+@import "tailwindcss";
+
+/**
+ * Paleta da Cantina.
+ *
+ * Duas camadas, e a separação é o que permite trocar o tema num lugar só:
+ *
+ *   1. escala crua      --color-sand-100, --color-clay-500…
+ *   2. papéis semânticos --color-canvas, --color-surface, --color-border…
+ *
+ * Componente usa SEMPRE o papel, nunca a escala. `bg-canvas`, não `bg-sand-100`.
+ *
+ * A referência é padaria de bairro no fim da tarde. Três regras sustentam isso:
+ * nenhum preto puro (o texto mais escuro é marrom — preto sobre bege vibra),
+ * nenhum cinza frio (todo neutro tem amarelo, senão o bege parece sujo ao lado)
+ * e terracota escassa (se tudo é primário, nada é).
+ */
+
+@theme {
+  /* --- Escala: Sand — o bege que sustenta a interface inteira -------------- */
+  --color-sand-50: #fdfbf7;
+  --color-sand-100: #f7f1e8;
+  --color-sand-200: #efe6d8;
+  --color-sand-300: #e2d5c1;
+  --color-sand-400: #c9b69c;
+  --color-sand-500: #ac9678;
+  --color-sand-600: #8b7659;
+  --color-sand-700: #6b5a44;
+  --color-sand-800: #4a3e30;
+  --color-sand-900: #2e261d;
+
+  /* --- Escala: Clay — terracota, a cor da marca e da ação ------------------ */
+  --color-clay-50: #fdf3ef;
+  --color-clay-100: #fae3d9;
+  --color-clay-200: #f2c3af;
+  --color-clay-300: #e89d7f;
+  --color-clay-400: #da7551;
+  --color-clay-500: #c75733;
+  --color-clay-600: #a94526;
+  --color-clay-700: #85361f;
+  --color-clay-800: #672c1b;
+  --color-clay-900: #4b2114;
+
+  /* --- Escala: Olive — acento secundário, para não depender só do laranja -- */
+  --color-olive-50: #f5f7ef;
+  --color-olive-100: #e8edda;
+  --color-olive-200: #d1dbb8;
+  --color-olive-300: #b0c08c;
+  --color-olive-400: #94a66c;
+  --color-olive-500: #7a8b5a;
+  --color-olive-600: #63734a;
+  --color-olive-700: #4d5a3b;
+  --color-olive-800: #3a4430;
+  --color-olive-900: #2b3224;
+
+  /**
+   * --- Escala: Berry — framboesa, o doce da vitrine -------------------------
+   *
+   * Entra com a landing. O painel não usa: lá dentro, cor é estado (terracota
+   * é ação, oliva é encomenda) e um quarto tom só confundiria. Na página de
+   * venda, cor é assunto — e a fruta vermelha é o que separa uma doceria de
+   * um restaurante à primeira vista, antes de qualquer palavra ser lida.
+   */
+  --color-berry-50: #fdf2f4;
+  --color-berry-100: #fbe3e8;
+  --color-berry-200: #f4c2cd;
+  --color-berry-300: #e899ab;
+  --color-berry-400: #d76e88;
+  --color-berry-500: #bf4f6b;
+  --color-berry-600: #a13c57;
+  --color-berry-700: #7f2f45;
+  --color-berry-800: #632636;
+  --color-berry-900: #481c28;
+
+  /**
+   * --- Escala: Honey — caramelo, o dinheiro --------------------------------
+   *
+   * Reservado ao que fala de custo e margem. Dourado é a única cor que promete
+   * lucro sem soar a banco, e ele já está na paleta por parentesco: é o mesmo
+   * amarelo que mora dentro de cada bege da escala Sand.
+   */
+  --color-honey-50: #fdf6e9;
+  --color-honey-100: #faeccc;
+  --color-honey-200: #f2d896;
+  --color-honey-300: #e6bd5f;
+  --color-honey-400: #d4a13a;
+  --color-honey-500: #b9852a;
+  --color-honey-600: #966921;
+  --color-honey-700: #74511b;
+  --color-honey-800: #573d16;
+  --color-honey-900: #3d2b10;
+
+  /* --- Semânticas: dessaturadas de propósito ------------------------------- */
+  --color-success-50: #eff5ed;
+  --color-success-500: #5c8a4e;
+  --color-success-700: #3f6435;
+
+  --color-warning-50: #fdf4e4;
+  --color-warning-500: #d9a036;
+  --color-warning-700: #9a6d18;
+
+  --color-danger-50: #fbeeec;
+  --color-danger-500: #be4a3c;
+  --color-danger-700: #8d3128;
+
+  --color-info-50: #edf4f5;
+  --color-info-500: #4c7d87;
+  --color-info-700: #345a63;
+
+  /* --- Papéis ------------------------------------------------------------- */
+  /* Fundo da página. É este bege que dá o tom de tudo. */
+  --color-canvas: var(--color-sand-100);
+  /* Cartões e áreas elevadas: mais claro que o fundo, nunca branco puro. */
+  --color-surface: var(--color-sand-50);
+  /* Campos e poços: mais escuro que o fundo, para o input parecer cavado. */
+  --color-sunken: var(--color-sand-200);
+
+  --color-border: var(--color-sand-300);
+  --color-border-strong: var(--color-sand-400);
+
+  --color-ink: var(--color-sand-900);
+  --color-ink-soft: var(--color-sand-700);
+  --color-ink-muted: var(--color-sand-600);
+  /* Texto sobre superfícies escuras ou coloridas. */
+  --color-ink-inverse: var(--color-sand-50);
+
+  --color-primary: var(--color-clay-500);
+  --color-primary-hover: var(--color-clay-600);
+  --color-primary-soft: var(--color-clay-50);
+
+  --color-accent: var(--color-olive-500);
+  --color-accent-soft: var(--color-olive-50);
+
+  /**
+   * Vitrine: os dois jeitos de comprar.
+   *
+   * "Pedir agora" é terracota — quente, com pressa, sai hoje. "Encomendar" é
+   * oliva — calmo, planejado, tem data marcada. A cor é a primeira pista de em
+   * qual dos dois o cliente está, antes de ele ler qualquer palavra.
+   *
+   * `--color-mode-*` é o modo CORRENTE, e quem troca é `[data-mode]` (em
+   * `@layer base`, abaixo). O mesmo cartão de produto, contador e botão fica
+   * terracota no delivery e oliva na encomenda sem saber de nenhum dos dois.
+   */
+  --color-mode: var(--color-clay-500);
+  --color-mode-strong: var(--color-clay-600);
+  --color-mode-soft: var(--color-clay-50);
+  --color-mode-tint: var(--color-clay-100);
+  --color-mode-ink: var(--color-clay-700);
+
+  /* --- Tipografia --------------------------------------------------------- */
+  /* Fraunces nos títulos: serifada, com exagero ótico que dá calor. */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  /* Inter na interface: número tabular importa mais que personalidade numa
+     tabela de preços. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  /**
+   * Seções escuras (integrações, números, rodapé).
+   *
+   * Marrom, não preto nem cinza-azulado: a página inteira é bege, e um bloco
+   * neutro no meio dela parece um buraco recortado de outro site.
+   */
+  --color-night: var(--color-sand-900);
+  --color-night-soft: var(--color-sand-800);
+
+  /* --- Forma e profundidade ----------------------------------------------- */
+  --radius-card: 0.875rem;
+  --radius-control: 0.625rem;
+  /* Blocos grandes da landing. 20px: o raio do cartão fica pequeno demais
+     quando o elemento passa de ~400px de largura. */
+  --radius-panel: 1.25rem;
+
+  /* Sombras quentes: sombra cinza sobre bege parece mofo. */
+  --shadow-soft: 0 1px 2px rgb(74 62 48 / 0.05), 0 2px 8px rgb(74 62 48 / 0.04);
+  --shadow-raised: 0 2px 4px rgb(74 62 48 / 0.06), 0 8px 20px rgb(74 62 48 / 0.08);
+  /* Cartão de UI flutuando sobre a foto do hero: precisa descolar do fundo
+     fotográfico, que já tem textura própria. */
+  --shadow-float: 0 4px 12px rgb(46 38 29 / 0.1), 0 24px 48px rgb(46 38 29 / 0.18);
+
+  /**
+   * Movimento.
+   *
+   * Tudo em CSS, nenhuma biblioteca: a vitrine abre no 4G do cliente, e cada
+   * quilobyte de JavaScript atrasa o cardápio. Entradas usam `backwards` (e não
+   * `both`) para que, terminada a animação, o elemento não carregue um
+   * `transform` residual — que viraria bloco de contenção e quebraria `sticky`.
+   */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-rise: rise 0.5s var(--ease-out-soft) backwards;
+  --animate-pop: pop 0.4s var(--ease-spring) backwards;
+  --animate-bump: bump 0.45s var(--ease-spring);
+  --animate-enter-left: enter-left 0.45s var(--ease-out-soft) backwards;
+  --animate-enter-right: enter-right 0.45s var(--ease-out-soft) backwards;
+  --animate-float-up: float-up 0.55s var(--ease-spring) backwards;
+  --animate-draw: draw 0.6s 0.25s var(--ease-out-soft) backwards;
+  --animate-burst: burst 0.9s 0.2s var(--ease-out-soft) both;
+  --animate-cover: cover 1.4s var(--ease-out-soft) backwards;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  /**
+   * Abertura da marca (`.brand-*`, em `@layer components`).
+   *
+   * Os tempos vivem aqui, e não espalhados pelas classes, porque a sequência só
+   * se lê como sequência quando os quatro números estão um debaixo do outro:
+   * nome, tigela, vapor aparecendo, vapor ondulando.
+   */
+  --animate-brand-word: brand-word 0.66s var(--ease-out-soft) backwards;
+  --animate-brand-bowl: brand-bowl 0.75s 0.58s var(--ease-out-soft) backwards;
+  --animate-brand-steam: brand-steam 0.5s 1.05s linear backwards;
+  --animate-brand-wisp: brand-wisp 3.6s 1.15s ease-in-out backwards;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  @keyframes pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    70% {
+      transform: scale(1.06);
+    }
+  }
+  @keyframes bump {
+    40% {
+      transform: scale(1.3);
+    }
+  }
+  @keyframes enter-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+  }
+  @keyframes enter-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+  }
+  @keyframes float-up {
+    from {
+      opacity: 0;
+      transform: translateY(120%);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 40;
+    }
+  }
+  @keyframes burst {
+    from {
+      opacity: 1;
+      transform: rotate(var(--angle)) translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: rotate(var(--angle)) translateY(-54px) scale(0.2);
+    }
+  }
+  @keyframes cover {
+    from {
+      transform: scale(1.1);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  /* O nome se revela da esquerda para a direita, como quem escreve. O `inset`
+     negativo em cima e embaixo é para a máscara não decepar a perna do "C" nem
+     o acento da Fraunces, que transbordam a caixa da linha. */
+  @keyframes brand-word {
+    from {
+      opacity: 0;
+      clip-path: inset(-0.35em 100% -0.35em -0.1em);
+    }
+    60% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(-0.35em -0.1em -0.35em -0.1em);
+    }
+  }
+
+  /* A tigela é desenhada, não revelada: o traço corre a borda uma vez. Com
+     `pathLength="1"` no SVG, o 1 aqui vale o contorno inteiro — redesenhar a
+     tigela não quebra a conta. */
+  @keyframes brand-bowl {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes brand-steam {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /**
+   * O vapor.
+   *
+   * Amplitude decrescente, e é ela que faz a animação TERMINAR em vez de ser
+   * cortada: o último quarto já é quase imóvel, então o fim não tem quadro em
+   * que o movimento some de repente. Fumaça que para no meio de uma curva
+   * parece congelada; esta desacelera e assenta.
+   *
+   * `skewX` junto do `rotate` é o que separa fumaça de pêndulo — o fio entorta
+   * ao subir em vez de balançar inteiro. E `scaleY` alterna porque coluna de ar
+   * quente estica quando sobe e encolhe quando é empurrada de lado.
+   */
+  @keyframes brand-wisp {
+    0%,
+    100% {
+      transform: none;
+    }
+    10% {
+      transform: rotate(-8deg) skewX(-7deg) scaleY(1.1);
+    }
+    24% {
+      transform: rotate(7deg) skewX(6deg) scaleY(0.94);
+    }
+    40% {
+      transform: rotate(-6deg) skewX(-5deg) scaleY(1.07);
+    }
+    55% {
+      transform: rotate(4.5deg) skewX(4deg) scaleY(0.96);
+    }
+    70% {
+      transform: rotate(-3deg) skewX(-2.5deg) scaleY(1.03);
+    }
+    84% {
+      transform: rotate(1.6deg) skewX(1.4deg) scaleY(0.99);
+    }
+    94% {
+      transform: rotate(-0.6deg) skewX(-0.5deg) scaleY(1);
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Deixa `height: auto` animar onde o navegador já sabe fazer isso. */
+    interpolate-size: allow-keywords;
+    /* Os links do cabeçalho são âncoras para seções da mesma página; sem isto,
+       o salto seco faz perder de vista de onde a página veio. O
+       `prefers-reduced-motion` lá embaixo desliga. */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    /* Fraunces tem altura-x generosa; sem apertar, títulos ficam esparramados. */
+    letter-spacing: -0.015em;
+  }
+
+  /**
+   * Foco visível em tudo que recebe teclado.
+   *
+   * Terracota sobre bege tem contraste suficiente para o anel ser visto sem
+   * gritar, e a folga de 2px impede que ele encoste na borda do controle.
+   */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-control);
+  }
+
+  /* Números alinhados em coluna: preço, quantidade, código de pedido. */
+  :where(table, [data-numeric]) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Seleção em terracota clara. O padrão do navegador é azul, e azul é a única
+     cor que não existe em lugar nenhum desta paleta. */
+  ::selection {
+    background-color: var(--color-clay-100);
+    color: var(--color-clay-900);
+  }
+
+  /* Os dois modos da vitrine — ver `--color-mode` no tema. */
+  [data-mode='now'] {
+    --color-mode: var(--color-clay-500);
+    --color-mode-strong: var(--color-clay-600);
+    --color-mode-soft: var(--color-clay-50);
+    --color-mode-tint: var(--color-clay-100);
+    --color-mode-ink: var(--color-clay-700);
+  }
+
+  [data-mode='later'] {
+    --color-mode: var(--color-olive-600);
+    --color-mode-strong: var(--color-olive-700);
+    --color-mode-soft: var(--color-olive-50);
+    --color-mode-tint: var(--color-olive-100);
+    --color-mode-ink: var(--color-olive-700);
+  }
+}
+
+@layer components {
+  /**
+   * Assinatura da marca (`components/landing/wordmark.tsx`).
+   *
+   * A ordem da abertura é a da leitura: primeiro o NOME, que é o que
+   * identifica, e só depois a tigela, que é o enfeite. Invertida, a tigela —
+   * por estar mais à esquerda — rouba a primeira fixação do olho para um
+   * desenho que não diz nada sozinho.
+   *
+   * O vapor ondula por três segundos e para. Fumaça em laço vira GIF de
+   * cabeçalho: na primeira visita é um detalhe, na décima é um tique piscando
+   * na periferia enquanto a pessoa tenta ler a tabela de preços. O movimento
+   * tem que caber na chegada e sumir.
+   */
+  .brand-word {
+    animation: var(--animate-brand-word);
+  }
+
+  .brand-bowl {
+    /* Estado de repouso: contorno inteiro visível. A animação sai de 1 e volta
+       para cá — sem `forwards`, e portanto sem resíduo depois que termina. */
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: var(--animate-brand-bowl);
+  }
+
+  .brand-steam {
+    animation: var(--animate-brand-steam);
+  }
+
+  .brand-wisp {
+    /* Sem `fill-box`, a origem seria a caixa do SVG inteiro e os dois fios
+       girariam em torno do meio da tigela — dois ponteiros de relógio. Com ela,
+       cada fio gira sobre o próprio pé, onde encosta na borda. */
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: var(--animate-brand-wisp);
+  }
+
+  /* O segundo fio com período e partida próprios. Na mesma duração os dois
+     oscilam em espelho e o conjunto vira limpador de para-brisa; defasados,
+     leem como duas correntes de ar no mesmo prato. */
+  .brand-wisp-b {
+    animation-duration: 4.3s;
+    animation-delay: 1.34s;
+  }
+
+  /**
+   * Folha que sobe da base (`features/storefront/sheet.tsx`).
+   *
+   * `<dialog>` com entrada E saída animadas: `@starting-style` dá o ponto de
+   * partida, e `overlay`/`display` com `allow-discrete` seguram o elemento na
+   * tela enquanto ele desce. Navegador que não conhece nada disso só abre e
+   * fecha — a folha continua funcionando, sem a transição.
+   */
+  .sheet {
+    margin: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: 92dvh;
+    padding: 0;
+    border-radius: 1.75rem 1.75rem 0 0;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow: 0 -12px 48px rgb(46 38 29 / 0.2);
+    overflow: hidden;
+    translate: 0 100%;
+    transition:
+      translate 0.45s var(--ease-out-soft),
+      overlay 0.45s allow-discrete,
+      display 0.45s allow-discrete;
+  }
+  .sheet[open] {
+    translate: 0 0;
+  }
+  @starting-style {
+    .sheet[open] {
+      translate: 0 100%;
+    }
+  }
+  .sheet::backdrop {
+    background: rgb(46 38 29 / 0);
+    backdrop-filter: blur(0);
+    transition:
+      background 0.35s,
+      backdrop-filter 0.35s,
+      overlay 0.45s allow-discrete,
+      display 0.45s allow-discrete;
+  }
+  .sheet[open]::backdrop {
+    background: rgb(46 38 29 / 0.42);
+    backdrop-filter: blur(3px);
+  }
+  @starting-style {
+    .sheet[open]::backdrop {
+      background: rgb(46 38 29 / 0);
+      backdrop-filter: blur(0);
+    }
+  }
+  @media (min-width: 640px) {
+    .sheet {
+      margin: auto;
+      max-width: 30rem;
+      border-radius: 1.75rem;
+      opacity: 0;
+      translate: 0 1.5rem;
+      transition:
+        translate 0.4s var(--ease-out-soft),
+        opacity 0.3s,
+        overlay 0.4s allow-discrete,
+        display 0.4s allow-discrete;
+    }
+    .sheet[open] {
+      opacity: 1;
+      translate: 0 0;
+    }
+    @starting-style {
+      .sheet[open] {
+        opacity: 0;
+        translate: 0 1.5rem;
+      }
+    }
+  }
+
+  /**
+   * Bloco que abre e fecha animando a altura.
+   *
+   * `grid-template-rows` de 0fr a 1fr anima altura desconhecida sem medir nada
+   * em JavaScript. Quem usa põe `inert` quando fechado, para o teclado não
+   * cair num campo invisível.
+   */
+  .reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 0.5s var(--ease-out-soft),
+      opacity 0.3s;
+  }
+  .reveal[data-open='true'] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .reveal > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /**
+   * Resposta do FAQ abrindo com altura animada.
+   *
+   * `::details-content` é o pseudo-elemento que embrulha o conteúdo de um
+   * `<details>`, e com `interpolate-size: allow-keywords` (ligado no `html`) o
+   * navegador sabe interpolar de `0` até `auto` — sem medir nada em
+   * JavaScript e sem o truque do `grid-template-rows` que `.reveal` usa.
+   *
+   * `content-visibility` entra na transição com `allow-discrete` porque é ela
+   * que mantém o conteúdo renderizado enquanto a altura desce; sem isso o texto
+   * some no primeiro quadro e a animação fecha sobre o vazio.
+   *
+   * Onde o pseudo-elemento não existe, o seletor inteiro não casa e o
+   * `<details>` abre de uma vez, como sempre abriu. Nenhuma resposta fica
+   * inacessível por causa disto — que é a razão de o acordeão continuar sendo
+   * `<details>` nativo, e não um componente nosso.
+   */
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.35s var(--ease-out-soft),
+      content-visibility 0.35s allow-discrete;
+  }
+
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+
+  /* Trilho horizontal (datas, categorias): rola com o dedo, sem barra. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Esqueleto com brilho passando — mais vivo que o pulse, mesmo custo. */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-sand-200) 0%,
+      var(--color-sand-100) 50%,
+      var(--color-sand-200) 100%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+
+  /**
+   * Entrada por rolagem, sem observador e sem JavaScript.
+   *
+   * `animation-timeline: view()` liga o progresso da animação à passagem do
+   * elemento pela janela — o navegador faz a conta que um `IntersectionObserver`
+   * faria, na thread do compositor e sem custo de script. Na landing isso
+   * importa duas vezes: a página é server component por decisão (ver `page.tsx`)
+   * e a CSP com nonce torna todo script um item a mais para justificar.
+   *
+   * As DUAS guardas são obrigatórias, e por motivos diferentes:
+   *
+   *   `@supports`  — onde a propriedade não existe (Firefox, hoje), a regra
+   *                  inteira é ignorada e o conteúdo nasce visível. Sem isso,
+   *                  o `opacity: 0` do primeiro quadro ficaria para sempre: uma
+   *                  landing em branco no navegador de quem se recusa a usar o
+   *                  Chrome.
+   *   `@media`     — quem desligou animação no sistema não deveria depender de
+   *                  rolar a página para ler um parágrafo.
+   *
+   * Reaproveita `rise`, o mesmo keyframe das entradas por tempo: a página toda
+   * aparece com o mesmo gesto, venha ele do relógio ou da rolagem.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .appear,
+      .appear-group > * {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 28%;
+      }
+
+      /* Cartões lado a lado entram no mesmo instante de rolagem, então a
+         defasagem não pode vir de `delay` — vem de faixas deslocadas, e o
+         escalonamento acompanha o dedo em vez de correr sozinho. */
+      .appear-group > *:nth-child(2) {
+        animation-range: entry 12% cover 36%;
+      }
+      .appear-group > *:nth-child(3) {
+        animation-range: entry 19% cover 44%;
+      }
+      .appear-group > *:nth-child(4) {
+        animation-range: entry 26% cover 52%;
+      }
+    }
+  }
+
+  /* Recorte de bilhete: encomenda é uma reserva, e o comprovante parece um. */
+  .ticket {
+    mask:
+      radial-gradient(circle 0.55rem at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 0.55rem at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+  }
+}
+
+@layer utilities {
+  /* Respeita quem desligou animação no sistema. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      /* Zerar a duração sem zerar o atraso deixaria o elemento parado no
+         primeiro quadro pelo tempo do atraso — e o primeiro quadro das nossas
+         entradas é `opacity: 0`. A marca sumiria por meio segundo justamente
+         para quem pediu menos movimento. */
+      animation-delay: 0s !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
