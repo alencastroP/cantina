@@ -1,6 +1,12 @@
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+
 /** @type {import('next').NextConfig} */
 
 const isProduction = process.env.NODE_ENV === 'production';
+
+// Só ativa os bindings do Cloudflare (`env`, R2, etc.) durante `next dev`.
+// Não faz nada em build nem em produção — lá quem inicializa é o Worker.
+initOpenNextCloudflareForDev();
 
 /**
  * Cabeçalhos de segurança que valem para o site inteiro.
@@ -62,9 +68,11 @@ const nextConfig = {
   // Os pacotes do monorepo exportam TypeScript direto, sem passo de build.
   transpilePackages: ['@cantina/contracts', '@cantina/domain'],
 
-  // Container por padrão (P12): `output: standalone` gera um bundle que roda
-  // com `node server.js`, sem node_modules. Em Vercel a opção é ignorada.
-  output: 'standalone',
+  // `output: standalone` só entra no build para o Dockerfile (self-host via
+  // VPS/Railway/Fly) — é ele quem seta BUILD_TARGET=docker. No build para
+  // Cloudflare Workers (OpenNext) e na Vercel a opção fica de fora: o
+  // OpenNext parte da saída padrão do `next build`, não da standalone.
+  output: process.env.BUILD_TARGET === 'docker' ? 'standalone' : undefined,
 
   // A versão do Next não é informação que ajude quem visita, e é informação
   // que ajuda quem procura uma falha conhecida.

@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cantina-web",
+  "main": ".open-next/worker.js",
+  // Compatibilidade mínima exigida pelo adaptador (nodejs_compat + fetch
+  // restrito a rotas públicas). Atualize a data periodicamente — não precisa
+  // ser hoje, só recente.
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Usado pelo OpenNext para chamadas internas (ex.: revalidação) sem sair
+  // para a rede pública.
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cantina-web" }],
+
+  // Variáveis públicas. Segredos (nenhum aqui hoje) vão por `wrangler secret
+  // put` ou pelas Environment Variables do painel do Cloudflare, nunca aqui.
+  "vars": {
+    "NODE_ENV": "production"
+  },
+
+  "observability": { "enabled": true }
+}

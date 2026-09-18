@@ -22,6 +22,9 @@ WORKDIR /repo
 COPY --from=deps /repo/node_modules node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# Liga o output: standalone no next.config.mjs — sem isso o build gera a
+# saída padrão do Next (a que o deploy via Cloudflare/OpenNext usa).
+ENV BUILD_TARGET=docker
 RUN npm run build -w @cantina/web
 
 FROM node:22-alpine AS runtime
