@@ -11,7 +11,7 @@ import { FinanceMockup } from './mockups';
 const BULLETS = [
   'O que entrou já vem lançado, de cada pedido pago na vitrine e em encomenda',
   'As saídas ficam por categoria: insumo, embalagem, gás, a ajuda de sábado',
-  'Mês a mês lado a lado — dá para ver se dezembro foi mesmo melhor que novembro',
+  'Mês a mês lado a lado: dá para ver se dezembro foi mesmo melhor que novembro',
   'Relatório por produto separa o que vende bem do que só dá trabalho',
 ];
 

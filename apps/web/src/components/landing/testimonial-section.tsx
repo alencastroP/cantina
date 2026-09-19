@@ -59,7 +59,7 @@ export function TestimonialSection() {
               <p className="font-display text-xl leading-snug text-ink sm:text-2xl">
                 {TESTIMONIAL.quote ?? (
                   <span className="text-ink-muted">
-                    [Depoimento da cliente atual — frase dela, colhida e autorizada por
+                    [Depoimento da cliente atual, com a frase dela, colhida e autorizada por
                     escrito.]
                   </span>
                 )}

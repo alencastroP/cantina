@@ -48,7 +48,7 @@ export function FinalCta() {
           <LockIcon size={15} className="mt-0.5 shrink-0" />
           <span>
             Depois do teste, {priceLabel()}. Pedimos CPF e forma de pagamento na entrada, e
-            o cartão é digitado na página do provedor — não nas nossas.
+            o cartão é digitado na página do provedor, não nas nossas.
           </span>
         </p>
       </div>

@@ -26,7 +26,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {
     default: 'Cantina',
-    template: '%s · Cantina',
+    // Nome primeiro, módulo depois: na aba do navegador, que corta o texto
+    // pela direita, é o nome que precisa sobreviver ao corte.
+    template: 'Cantina - %s',
   },
   description: 'Vitrine e gestão para pequenos negócios de comida.',
 };

@@ -22,9 +22,10 @@ import { trialLabel } from './config';
 /**
  * Hero.
  *
- * Única `h1` do site. O que ela precisa entregar em uma linha: o que é, para
- * quem é, e que não é mais um app de delivery — porque é com aplicativo de
- * delivery que a dona da doceria vai comparar, e a comissão é o assunto dela.
+ * Única `h1` do site. O que ela precisa entregar em uma linha: que tudo da
+ * loja vive no mesmo sistema, começando pela vitrine, e que isso não é mais um
+ * app de delivery. É com aplicativo de delivery que a dona da doceria vai
+ * comparar, e a comissão é o assunto dela.
  *
  * A foto fica à direita e o cartão de UI flutua sobre ela: a foto dá o cheiro
  * do negócio, o cartão prova que existe software. Sozinha, a foto vira anúncio
@@ -59,7 +60,7 @@ import { trialLabel } from './config';
 
 /* As palavras do título, viradas uma a uma. Uma constante, e não `split()` no
    corpo do componente: assim a quebra acontece uma vez, e não a cada render. */
-const TITLE_WORDS = 'Sua doceria vende, agenda e fecha o mês no mesmo lugar'.split(' ');
+const TITLE_WORDS = 'Sua doceria inteira num lugar só, da vitrine ao fim do mês'.split(' ');
 
 export function Hero() {
   /* Ponto de partida do movimento. `null` no servidor e no primeiro quadro, o
@@ -192,7 +193,7 @@ export function Hero() {
               variants={block}
               className="inline-flex items-center gap-2 rounded-full border border-clay-200 bg-clay-50 px-3 py-1.5 text-xs font-medium text-clay-700"
             >
-              Feito para doceria, confeitaria e bolo sob encomenda
+              Do brigadeiro ao bolo de três andares
             </m.p>
 
             {/* `perspective` aqui, e não em cada palavra: um ponto de fuga só
@@ -222,10 +223,10 @@ export function Hero() {
               variants={block}
               className="mt-5 text-lg leading-relaxed text-ink-soft sm:text-xl"
             >
-              Cardápio online com o pedido caindo direto no seu WhatsApp, calendário de
-              encomendas que o cliente enxerga antes de pedir, estoque de insumo e o custo
-              real de cada receita. Sem planilha paralela, sem caderno e sem comissão de
-              aplicativo.
+              A vitrine que sua cliente abre no celular, o pedido chegando pelo WhatsApp, a
+              agenda de encomendas, o estoque de insumo, o custo real de cada receita e o
+              fechamento do mês. Um sistema só, em que cada parte alimenta a seguinte: sem
+              planilha paralela, sem caderno e sem comissão de aplicativo.
             </m.p>
 
             <m.div
@@ -286,7 +287,7 @@ export function Hero() {
             >
               <LockIcon size={15} className="mt-0.5 shrink-0" />
               <span>
-                Pedimos CPF e uma forma de pagamento para começar — a cobrança só acontece
+                Pedimos CPF e uma forma de pagamento para começar. A cobrança só acontece
                 quando o teste termina, e dá para cancelar antes disso pelo painel. O cartão
                 é digitado na página do banco, nunca aqui.
               </span>

@@ -21,7 +21,7 @@ const ITEMS = [
   {
     icon: ChatIcon,
     title: 'WhatsApp',
-    text: 'O pedido chega no número da loja já formatado, e a confirmação sai pelo mesmo caminho. Sua cliente continua falando com você onde ela já falava — ninguém precisa instalar nada.',
+    text: 'O pedido chega no número da loja já formatado, e a confirmação sai pelo mesmo caminho. Sua cliente continua falando com você onde ela já falava. Ninguém precisa instalar nada.',
   },
   {
     icon: CardIcon,
@@ -39,7 +39,7 @@ const ITEMS = [
   {
     icon: ShieldIcon,
     title: 'Seus dados separados dos outros',
-    text: 'Cada doceria tem sua própria fatia no banco, isolada pelo próprio banco de dados — não por uma regra que algum programa precisa lembrar de aplicar. Nenhuma outra loja enxerga seu cardápio, seu custo ou sua lista de clientes.',
+    text: 'Cada doceria tem sua própria fatia no banco, isolada pelo próprio banco de dados, não por uma regra que algum programa precisa lembrar de aplicar. Nenhuma outra loja enxerga seu cardápio, seu custo ou sua lista de clientes.',
   },
 ];
 

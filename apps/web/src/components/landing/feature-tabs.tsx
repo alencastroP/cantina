@@ -44,7 +44,7 @@ const TABS: Tab[] = [
     label: 'Vender',
     icon: StoreIcon,
     title: 'Seu cardápio no ar, e o pedido chegando pronto no WhatsApp',
-    lead: 'A cliente abre o link, monta o pedido com os tamanhos e recheios que você cadastrou e envia. Chega formatado, com endereço e forma de pagamento — e não como sete mensagens soltas que você precisa juntar entre uma fornada e outra.',
+    lead: 'A cliente abre o link, monta o pedido com os tamanhos e recheios que você cadastrou e envia. Chega formatado, com endereço e forma de pagamento, e não como sete mensagens soltas que você precisa juntar entre uma fornada e outra.',
     bullets: [
       'Endereço próprio da sua loja, do tamanho certo para a bio do Instagram',
       'Tamanho, recheio, cobertura e adicional com o preço somando sozinho',
@@ -72,7 +72,7 @@ const TABS: Tab[] = [
     label: 'Estoque',
     icon: StockIcon,
     title: 'Insumo e embalagem saindo do estoque a cada venda',
-    lead: 'Cada produto tem sua ficha. Quando sai um delivery ou uma encomenda, o chantilly, a farinha e a caixa saem junto — do mesmo estoque, porque a geladeira é uma só, mesmo quando a venda veio por dois caminhos.',
+    lead: 'Cada produto tem sua ficha. Quando sai um delivery ou uma encomenda, o chantilly, a farinha e a caixa saem junto, do mesmo estoque, porque a geladeira é uma só, mesmo quando a venda veio por dois caminhos.',
     bullets: [
       'Baixa automática pela receita, tanto na venda quanto na produção',
       'Aviso quando um item chega no mínimo que você marcou',
@@ -93,7 +93,7 @@ const TABS: Tab[] = [
       'Datas que se repetem ficam visíveis: aniversário, formatura, chá',
       // Nada de "exportável" aqui: exportação ainda não existe no produto, e
       // bullet de landing é promessa. Volta quando a tela de exportação vier.
-      'A lista é sua, na sua conta — e não dentro do aplicativo de entrega de outra empresa',
+      'A lista é sua, na sua conta, e não dentro do aplicativo de entrega de outra empresa',
     ],
     mockup: CustomersMockup,
   },
@@ -153,7 +153,7 @@ export function FeatureTabs() {
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-ink-soft">
             Cardápio no Instagram, encomenda no caderno, estoque na cabeça e o preço no
-            chute. O Cantina junta os quatro — e faz um conversar com o outro.
+            chute. O Cantina junta os quatro e faz um conversar com o outro.
           </p>
         </div>
 

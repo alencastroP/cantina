@@ -22,7 +22,7 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
         conta continue de pé no dia seguinte ao fim do teste sem você ter que lembrar de
         nada. <strong className="font-medium">Nada é cobrado durante o período</strong>, e
         dá para cancelar pelo painel a qualquer momento antes do fim. Os dados do cartão
-        são digitados numa página do provedor de pagamento — eles não passam pelas telas
+        são digitados numa página do provedor de pagamento. Eles não passam pelas telas
         do Cantina nem ficam guardados aqui.
       </>
     ),
@@ -53,7 +53,7 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
         O painel e a vitrine funcionam no navegador do celular, e foram desenhados
         pensando em quem usa com uma mão só, de pé, no meio do balcão.{' '}
         <strong className="font-medium">
-          Aplicativo para instalar ainda não existe — está no nosso plano, mas não é algo
+          Aplicativo para instalar ainda não existe. Está no nosso plano, mas não é algo
           que você tem hoje.
         </strong>
       </>
@@ -63,8 +63,8 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
     q: 'Vou ter que cadastrar todos os produtos sozinha?',
     a: (
       <>
-        Não. Você manda a lista do jeito que ela existe hoje — print do Instagram,
-        planilha, foto do caderno — e a gente cadastra junto com você. Ficha técnica e
+        Não. Você manda a lista do jeito que ela existe hoje (print do Instagram,
+        planilha, foto do caderno) e a gente cadastra junto com você. Ficha técnica e
         estoque entram depois, com calma, sem travar as vendas enquanto isso.
       </>
     ),
@@ -75,7 +75,7 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
       <>
         Você e as pessoas que você convidar para o painel. Cada doceria fica isolada das
         outras dentro do próprio banco de dados, e não por uma regra que algum programa
-        precisa lembrar de aplicar — nenhuma outra loja alcança seu cardápio, seu custo ou
+        precisa lembrar de aplicar. Nenhuma outra loja alcança seu cardápio, seu custo ou
         sua lista de clientes.
         {/* PLACEHOLDER: descrever aqui a política real de acesso da equipe do
             Cantina ao dado do lojista (quando, por quem, com qual registro)
@@ -89,7 +89,7 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
     a: (
       <>
         Não. A assinatura é um valor fixo por mês, e o que você vende é seu. Existe a taxa
-        do meio de pagamento que você escolher — Pix, cartão ou boleto —, e ela é do
+        do meio de pagamento que você escolher (Pix, cartão ou boleto), e ela é do
         provedor, não nossa.
       </>
     ),
@@ -99,7 +99,7 @@ const FAQ: Array<{ q: string; a: React.ReactNode }> = [
     a: (
       <>
         Dá, e no começo é o mais comum. O Cantina inclusive calcula quanto sobra em cada
-        canal, com a comissão do aplicativo descontada — assim a decisão de continuar,
+        canal, com a comissão do aplicativo descontada. Assim, a decisão de continuar,
         diminuir ou sair de lá vira conta, e não intuição.
       </>
     ),
@@ -152,7 +152,7 @@ export function FaqSection() {
           >
             Veja como começar
           </a>{' '}
-          — e pergunte antes de decidir qualquer coisa.
+          e pergunte antes de decidir qualquer coisa.
         </p>
       </div>
     </section>

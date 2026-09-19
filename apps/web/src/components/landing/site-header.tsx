@@ -121,7 +121,7 @@ export function SiteHeader() {
         <Link
           href="/"
           className="shrink-0 rounded-control"
-          aria-label="Cantina — início"
+          aria-label="Cantina, início"
         >
           <Wordmark />
         </Link>

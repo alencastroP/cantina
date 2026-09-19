@@ -27,11 +27,11 @@ const CARDS: Card[] = [
   {
     eyebrow: 'Pagamento na reserva',
     title: 'A encomenda só ocupa a data depois que o sinal entra',
-    lead: 'O pagamento acontece dentro do próprio pedido e a confirmação volta sozinha — você não precisa conferir comprovante em print nem ficar de olho no extrato para saber se pode começar a produzir.',
+    lead: 'O pagamento acontece dentro do próprio pedido e a confirmação volta sozinha: você não precisa conferir comprovante em print nem ficar de olho no extrato para saber se pode começar a produzir.',
     bullets: [
       'Sinal, entrada ou valor total: você escolhe por tipo de produto',
       'Confirmação automática assim que o pagamento cai',
-      'Bolo grande só sai da fila depois de pago — some o bolo furado',
+      'Bolo grande só sai da fila depois de pago: some o bolo furado',
       'Comprovante da reserva enviado para a cliente sem você digitar nada',
     ],
     tone: 'berry',
@@ -40,12 +40,12 @@ const CARDS: Card[] = [
   {
     eyebrow: 'Custo por receita',
     title: 'Quanto sobra de verdade em cada doce que você vende',
-    lead: 'Cadastre a receita uma vez, com insumo e embalagem. O custo se atualiza sozinho quando o preço da compra muda, e você vê o que resta em cada canal de venda — inclusive descontando a comissão de aplicativo.',
+    lead: 'Cadastre a receita uma vez, com insumo e embalagem. O custo se atualiza sozinho quando o preço da compra muda, e você vê o que resta em cada canal de venda, inclusive descontando a comissão de aplicativo.',
     bullets: [
       'Custo recalculado a cada compra registrada, sem refazer planilha',
       'Preço sugerido a partir da margem que você quer, não do chute',
       'Comparação lado a lado: sua vitrine e o aplicativo de entrega',
-      'Embalagem, fita e caixa contam no custo — porque contam no bolso',
+      'Embalagem, fita e caixa contam no custo, porque contam no bolso',
     ],
     tone: 'honey',
     mockup: CostMockup,

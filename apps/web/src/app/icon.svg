@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!--
+    Favicon: a mesma tigela do Wordmark, em bloco cheio.
+
+    Fundo sólido em terracota, e não traço sobre transparente: a 16px, numa
+    aba clara ou escura, um contorno fino some. O bloco mantém a marca
+    legível nos dois temas sem precisar de duas versões.
+  -->
+  <rect width="32" height="32" rx="7" fill="#c75733"/>
+  <g transform="translate(4 4)" fill="none" stroke="#faf4ec" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.5 11.5h17a8.5 8.5 0 0 1-8.5 8.5 8.5 8.5 0 0 1-8.5-8.5Z"/>
+    <path d="M9.9 9.6q1.35-1.15 0-2.3t0-2.3"/>
+    <path d="M14.3 9.8q-1.35-1.15 0-2.3t0-2.3"/>
+  </g>
+</svg>

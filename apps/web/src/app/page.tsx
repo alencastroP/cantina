@@ -12,8 +12,8 @@ import { LogoStrip } from '../components/landing/logo-strip';
 import { OnboardingTimeline } from '../components/landing/onboarding-timeline';
 import { SiteFooter } from '../components/landing/site-footer';
 import { SiteHeader } from '../components/landing/site-header';
-import { StatsSection } from '../components/landing/stats-section';
 import { TestimonialSection } from '../components/landing/testimonial-section';
+import { UnifiedFlow } from '../components/landing/unified-flow';
 
 /**
  * Landing do domínio raiz.
@@ -38,21 +38,21 @@ import { TestimonialSection } from '../components/landing/testimonial-section';
  *    6 financeiro       "e valeu a pena?", que é a pergunta do fim do mês
  *    7 comparativo      o reconhecimento — a semana dela, descrita
  *    8 integrações      não vai trocar o WhatsApp, vai parar de usá-lo como caderno
- *    9 números          prova de escala (marcadores até alguém medir)
+ *    9 corrente          a promessa do hero sustentada: uma parte alimenta a outra
  *   10 depoimento       prova de gente
  *   11 como começar     desarma o medo de ter que cadastrar tudo sozinha
  *   12 dúvidas          o que trava a decisão, respondido sem promessa falsa
  */
 
 export const metadata: Metadata = {
-  title: 'Cantina · Sistema para doceria, confeitaria e bolo sob encomenda',
+  title: 'Cantina - Sistema para doceria, confeitaria e bolo sob encomenda',
   description:
     'Vitrine com pedido pelo WhatsApp, calendário de encomendas, controle de estoque e custo real por receita. Feito para quem vive de fazer doce.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'Cantina · Sua doceria vende, agenda e fecha o mês no mesmo lugar',
+    title: 'Cantina - Sua doceria inteira num lugar só, da vitrine ao fim do mês',
     description:
-      'Vitrine, encomendas com calendário, estoque de insumo e custo por receita — sem planilha e sem comissão por pedido.',
+      'Vitrine, encomendas com calendário, estoque de insumo e custo por receita, sem planilha e sem comissão por pedido.',
     type: 'website',
     locale: 'pt_BR',
     siteName: 'Cantina',
@@ -93,7 +93,7 @@ export default function HomePage() {
         <FinanceCard />
         <ComparisonSection />
         <IntegrationsSection />
-        <StatsSection />
+        <UnifiedFlow />
         <TestimonialSection />
         <OnboardingTimeline />
         <FaqSection />

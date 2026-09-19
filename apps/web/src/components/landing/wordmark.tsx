@@ -91,9 +91,17 @@ export function Wordmark({
           d="M3.5 11.5h17a8.5 8.5 0 0 1-8.5 8.5 8.5 8.5 0 0 1-8.5-8.5Z"
         />
 
+        {/* Cada fio é uma serpentina: duas curvas quadráticas que se espelham
+            (`q` seguido de `t`), então o traço sobe ondulando em vez de pender
+            para um lado. A amplitude foi medida na tela, não no arquivo: com
+            menos que estes 1.35 (de um viewBox de 24) a curva sobrevive no SVG
+            e some na rasterização aos 20px da barra lateral, que é o menor
+            tamanho em que a marca aparece. Os dois fios são espelhados no eixo
+            X e partem de alturas diferentes, porque vapor que sobe em paralelo
+            perfeito lê como duas antenas. */}
         <g className="brand-steam">
-          <path className="brand-wisp" d="M9.5 8.2c0-1.4 1.6-1.6 1.6-3" />
-          <path className="brand-wisp brand-wisp-b" d="M14 8.2c0-1.4 1.6-1.6 1.6-3" />
+          <path className="brand-wisp" d="M9.9 9.6q1.35-1.15 0-2.3t0-2.3" />
+          <path className="brand-wisp brand-wisp-b" d="M14.3 9.8q-1.35-1.15 0-2.3t0-2.3" />
         </g>
       </svg>
 

@@ -27,7 +27,7 @@ const STEPS = [
   {
     step: 'Passo 2',
     title: 'A gente monta o cardápio com você',
-    text: 'Manda a lista do jeito que ela existe hoje: print do Instagram, planilha, foto do caderno. Cadastramos junto — você não vai passar a madrugada digitando preço de brigadeiro.',
+    text: 'Manda a lista do jeito que ela existe hoje: print do Instagram, planilha, foto do caderno. Cadastramos junto. Você não vai passar a madrugada digitando preço de brigadeiro.',
     tone: 'honey',
   },
   {
