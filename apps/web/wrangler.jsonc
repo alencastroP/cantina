@@ -20,10 +20,23 @@
   // para a rede pública.
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cantina" }],
 
-  // Variáveis públicas. Segredos (nenhum aqui hoje) vão por `wrangler secret
-  // put` ou pelas Environment Variables do painel do Cloudflare, nunca aqui.
+  // Variáveis públicas, versionadas aqui de propósito: `wrangler deploy`
+  // SOBRESCREVE as vars do Worker com o que estiver neste arquivo, então o que
+  // só existe no painel do Cloudflare some no primeiro deploy feito pela CLI.
+  // Segredo não entra aqui (vai por `wrangler secret put`); estas são públicas
+  // por definição, já que `NEXT_PUBLIC_*` vai embutido no bundle.
+  //
+  // Elas também precisam existir como variáveis de BUILD no painel: o Next
+  // embute `NEXT_PUBLIC_*` na hora do build, não em runtime, e é a esteira do
+  // Workers Builds que roda esse build.
+  //
+  // ROOT_DOMAIN é o host que o middleware trata como domínio raiz (landing e
+  // painel). Trocar para appcantina.com.br quando o domínio próprio entrar,
+  // senão a home passa a ser tratada como vitrine de uma loja.
   "vars": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_API_URL": "https://appcantina-api.onrender.com",
+    "NEXT_PUBLIC_ROOT_DOMAIN": "cantina.pedrovalencastro.workers.dev"
   },
 
   "observability": { "enabled": true }
