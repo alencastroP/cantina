@@ -76,6 +76,27 @@ interface AsaasSubscriptionResponse {
   nextDueDate?: string;
 }
 
+interface AsaasPaymentListResponse {
+  data?: Array<{ invoiceUrl?: string }>;
+}
+
+/**
+ * Link da primeira fatura de uma assinatura recém-criada.
+ *
+ * `POST /subscriptions` não devolve URL de cobrança nenhuma — o Asaas gera a
+ * fatura à parte, e só na hora do vencimento. Com `nextDueDate` igual a hoje
+ * (a única forma de cobrança imediata, ver `criando-uma-assinatura` na
+ * documentação do Asaas), a primeira fatura já existe no instante seguinte
+ * e este é o jeito documentado de pegá-la: listar as faturas da assinatura,
+ * pegar a mais recente.
+ */
+async function fetchFirstInvoiceUrl(subscriptionId: string): Promise<string | null> {
+  const list = await call<AsaasPaymentListResponse>(
+    `/payments?subscription=${encodeURIComponent(subscriptionId)}&limit=1`,
+  );
+  return list.data?.[0]?.invoiceUrl ?? null;
+}
+
 function mapSubscriptionStatus(status: string | undefined): BillingSubscription['status'] {
   switch (status) {
     case 'ACTIVE':
@@ -156,6 +177,7 @@ export const asaasProvider: BillingProvider = {
       providerSubscriptionId: created.id,
       status: mapSubscriptionStatus(created.status ?? 'ACTIVE'),
       currentPeriodEnd: created.nextDueDate ? new Date(`${created.nextDueDate}T00:00:00Z`) : null,
+      checkoutUrl: await fetchFirstInvoiceUrl(created.id),
     };
   },
 

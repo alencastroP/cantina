@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "seed": "tsx --env-file=../../.env scripts/seed.ts",
     "verify:rls": "tsx --env-file=../../.env scripts/verify-rls.ts",
-    "test": "tsx --test src/app.test.ts src/shared/slug.test.ts src/modules/inventory/stock.test.ts src/modules/storefront/storefront.test.ts src/modules/finance/finance.test.ts src/modules/reports/reports.test.ts src/modules/billing/billing.test.ts src/integrations/whatsapp.test.ts src/integrations/storage.test.ts src/http/middlewares/cost-visibility.test.ts",
+    "test": "tsx --test src/app.test.ts src/shared/slug.test.ts src/modules/inventory/stock.test.ts src/modules/storefront/storefront.test.ts src/modules/finance/finance.test.ts src/modules/reports/reports.test.ts src/modules/billing/billing.test.ts src/modules/signup/signup.test.ts src/integrations/whatsapp.test.ts src/integrations/storage.test.ts src/http/middlewares/cost-visibility.test.ts",
     "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {

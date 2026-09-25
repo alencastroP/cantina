@@ -13,6 +13,7 @@
     "test": "tsx --test src/contracts.test.ts"
   },
   "dependencies": {
+    "@cantina/domain": "*",
     "zod": "^3.24.1"
   },
   "devDependencies": {

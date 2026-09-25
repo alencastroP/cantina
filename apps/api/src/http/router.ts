@@ -36,6 +36,7 @@ import {
 } from '../modules/platform/platform.routes';
 import { reportsRouter } from '../modules/reports/reports.routes';
 import { settingsRouter } from '../modules/settings/settings.routes';
+import { signupRouter } from '../modules/signup/signup.routes';
 import { storefrontPublicRouter } from '../modules/storefront/storefront.routes';
 import { invitesPublicRouter, usersRouter } from '../modules/users/users.routes';
 import { requireAuth } from './middlewares/auth';
@@ -74,6 +75,10 @@ apiRouter.use('/auth', authRouter);
 // Aceite de convite também é público — quem chega pelo link do e-mail ainda
 // não tem senha para fazer login.
 apiRouter.use('/invites', invitesPublicRouter);
+
+// Cadastro público do teste grátis (módulo 11) — anônimo, sem tenant no
+// contexto. Ver SIGNUP-TESTE-GRATIS.md.
+apiRouter.use('/signup', signupRouter);
 
 /* --- Vitrine pública (módulo 8) ------------------------------------------- */
 export const storefrontRouter: Router = Router();

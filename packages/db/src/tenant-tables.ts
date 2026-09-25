@@ -29,6 +29,9 @@ export const PLATFORM_TABLES: ReadonlySet<string> = new Set([
   'subscription_invoices',
   'webhook_events',
   'platform_users',
+  // Nasce ANTES de existir tenant de verdade — o cadastro público roda
+  // inteiro na conexão de plataforma (ver `modules/signup`).
+  'trial_signup_attempts',
   // `tenant_counters` NÃO entra aqui, apesar de nascer junto com o tenant.
   // Ela é incrementada dentro da transação que cria o pedido, pela conexão
   // da aplicação — tratá-la como tabela de plataforma revogaria o acesso do

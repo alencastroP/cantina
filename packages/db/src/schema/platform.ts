@@ -60,6 +60,19 @@ export const tenants = pgTable(
     planId: uuid('plan_id').references(() => plans.id, { onDelete: 'set null' }),
     timeZone: text('time_zone').notNull().default('America/Sao_Paulo'),
     trialEndsAt: timestamp('trial_ends_at', { withTimezone: true, mode: 'date' }),
+    /**
+     * Marca de nascimento pelo CADASTRO PÚBLICO (SIGNUP-TESTE-GRATIS.md §3.8).
+     *
+     * Presente = empresa sem senha, sem poder receber pedido, esperando o
+     * gateway confirmar o primeiro pagamento. `releasePendingSignup` limpa
+     * este campo (e só então define `trialEndsAt`) quando isso acontece; o
+     * job `signup.expire-abandoned` apaga quem passou 24h ainda com o campo
+     * preenchido. Nula para toda empresa criada por `/platform` (admin).
+     */
+    pendingConfirmationAt: timestamp('pending_confirmation_at', {
+      withTimezone: true,
+      mode: 'date',
+    }),
     ...timestamps(),
     deletedAt: deletedAt(),
   },
@@ -174,6 +187,28 @@ export const webhookEvents = pgTable(
     uniqueIndex('webhook_events_provider_event_uq').on(table.provider, table.providerEventId),
     index('webhook_events_pending_idx').on(table.processedAt),
   ],
+);
+
+/**
+ * Idempotência do cadastro público (SIGNUP-TESTE-GRATIS.md §3.2).
+ *
+ * `requireIdempotencyKey` só valida o formato da chave; quem deduplica é
+ * quem tem tabela própria — e esta é a PRIMEIRA rota sem tenant a precisar
+ * disso (ver o comentário em `http/middlewares/idempotency.ts`). Uma linha
+ * só aparece com `checkoutUrl` preenchido se a transação que a escreveu deu
+ * COMMIT: uma tentativa que falha no meio (gateway fora do ar, por exemplo)
+ * derruba a linha junto, e a mesma chave pode tentar de novo do zero.
+ */
+export const trialSignupAttempts = pgTable(
+  'trial_signup_attempts',
+  {
+    id: primaryId(),
+    idempotencyKey: text('idempotency_key').notNull(),
+    tenantId: uuid('tenant_id').references(() => tenants.id, { onDelete: 'cascade' }),
+    checkoutUrl: text('checkout_url'),
+    ...timestamps(),
+  },
+  (table) => [uniqueIndex('trial_signup_attempts_key_uq').on(table.idempotencyKey)],
 );
 
 export const platformUsers = pgTable(

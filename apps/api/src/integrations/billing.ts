@@ -28,8 +28,12 @@ export interface CreateSubscriptionInput {
   providerCustomerId: string;
   planCode: string;
   amountCents: number;
-  /** `PIX` ou `BOLETO` no Asaas; cartão exige tokenização à parte. */
-  billingType: 'PIX' | 'BOLETO' | 'CREDIT_CARD';
+  /**
+   * `PIX` ou `BOLETO` no Asaas; cartão exige tokenização à parte.
+   * `UNDEFINED`: quem paga escolhe na própria página do provedor — é o que
+   * o cadastro público usa, porque não coleta cartão (D-cadastro-trial).
+   */
+  billingType: 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'UNDEFINED';
   nextDueDate: string;
 }
 
@@ -37,6 +41,13 @@ export interface BillingSubscription {
   providerSubscriptionId: string;
   status: 'active' | 'past_due' | 'canceled';
   currentPeriodEnd: Date | null;
+  /**
+   * Link da PRIMEIRA fatura, hospedado pelo provedor — nulo quando o
+   * gateway ainda não gerou nenhuma (só existe se `nextDueDate` for hoje).
+   * É o que o cadastro público devolve como `checkoutUrl`; a assinatura do
+   * painel (`billing.service.ts`) nunca lê este campo.
+   */
+  checkoutUrl: string | null;
 }
 
 export type BillingEventType =
@@ -97,6 +108,8 @@ const manualProvider: BillingProvider = {
       providerSubscriptionId: `manual-sub-${Date.now().toString(36)}`,
       status: 'active',
       currentPeriodEnd: end,
+      // Sem gateway não existe página de checkout nenhuma para linkar.
+      checkoutUrl: null,
     };
   },
 

@@ -10,6 +10,7 @@ import { registerOrderJobs } from './modules/delivery-orders/orders.jobs';
 import { registerBillingJobs } from './modules/billing/billing.jobs';
 import { registerFinanceJobs } from './modules/finance/finance.jobs';
 import { registerPreorderJobs } from './modules/preorders/preorders.jobs';
+import { registerSignupJobs } from './modules/signup/signup.jobs';
 import { logger } from './shared/logger';
 
 /**
@@ -34,6 +35,7 @@ async function bootstrap(): Promise<void> {
   await registerPreorderJobs();
   await registerFinanceJobs();
   await registerBillingJobs();
+  await registerSignupJobs();
 
   server = app.listen(env.API_PORT, () => {
     logger.info(

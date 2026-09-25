@@ -7,6 +7,7 @@ import { invoiceUrlFrom } from '../../integrations/asaas';
 import { billingProvider, type BillingEvent } from '../../integrations/billing';
 import { logger } from '../../shared/logger';
 import * as repository from '../platform/platform.repository';
+import { releasePendingSignup } from '../signup/signup.service';
 
 /**
  * Webhook de cobrança (§6.11 do PLAN.md).
@@ -134,6 +135,9 @@ async function apply(tx: Transaction, event: BillingEvent, payload: unknown): Pr
       });
 
       await setTenantStatus(tx, subscription.tenantId, 'active');
+      // Sem efeito para assinatura que não veio do cadastro público —
+      // `releasePendingSignup` só age quando `pendingConfirmationAt` existe.
+      await releasePendingSignup(tx, subscription.tenantId);
       break;
     }
 

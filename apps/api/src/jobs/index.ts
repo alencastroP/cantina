@@ -33,6 +33,8 @@ export const JOBS = {
   materializeRecurrences: 'finance.materialize-recurrences',
   /** Cobrança e mudança de status de assinatura em atraso (módulo 11). */
   dunning: 'subscription.dunning',
+  /** Apaga cadastro público (§SIGNUP-TESTE-GRATIS.md) nunca confirmado em 24h. */
+  expireAbandonedSignups: 'signup.expire-abandoned',
 } as const;
 
 export type JobName = (typeof JOBS)[keyof typeof JOBS];

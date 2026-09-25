@@ -44,3 +44,18 @@ export const writeLimiter = rateLimit({
   windowMs: 60_000,
   limit: 20,
 });
+
+/**
+ * Cadastro público do teste grátis (SIGNUP-TESTE-GRATIS.md §3.3).
+ *
+ * Ao contrário de `authLimiter`, aqui o que interessa limitar é o SUCESSO:
+ * criar contas é o objetivo do abuso, não um efeito colateral dele. Três por
+ * IP por hora é baixo de propósito — duas docerias legítimas no mesmo IP na
+ * mesma hora é caso raro, e quem cair no limite fala com o suporte.
+ */
+export const signupLimiter = rateLimit({
+  ...base,
+  windowMs: 60 * 60_000,
+  limit: 3,
+  skipFailedRequests: true,
+});

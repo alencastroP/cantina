@@ -14,3 +14,4 @@ export * from './reports';
 export * from './storefront';
 export * from './billing';
 export * from './platform';
+export * from './signup';
