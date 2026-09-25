@@ -31,12 +31,12 @@
   // Workers Builds que roda esse build.
   //
   // ROOT_DOMAIN é o host que o middleware trata como domínio raiz (landing e
-  // painel). Trocar para appcantina.com.br quando o domínio próprio entrar,
-  // senão a home passa a ser tratada como vitrine de uma loja.
+  // painel). Qualquer host que não bata com isso (ou com "www." + isso) é
+  // tratado como vitrine de loja — por isso precisa ser o domínio próprio.
   "vars": {
     "NODE_ENV": "production",
     "NEXT_PUBLIC_API_URL": "https://appcantina-api.onrender.com",
-    "NEXT_PUBLIC_ROOT_DOMAIN": "cantina.pedrovalencastro.workers.dev"
+    "NEXT_PUBLIC_ROOT_DOMAIN": "appcantina.com.br"
   },
 
   "observability": { "enabled": true }
