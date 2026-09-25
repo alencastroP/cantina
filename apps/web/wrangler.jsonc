@@ -20,6 +20,12 @@
   // para a rede pública.
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "cantina" }],
 
+  // Custom Domain criado no painel (Settings → Domains & Routes). Declarado
+  // aqui de propósito: sem isto, `wrangler deploy` via CLI ou via Workers
+  // Builds enxerga a rota remota como "config que não bate com a local" e a
+  // apaga no próximo deploy, derrubando appcantina.com.br sem aviso.
+  "routes": [{ "pattern": "appcantina.com.br", "custom_domain": true }],
+
   // Variáveis públicas, versionadas aqui de propósito: `wrangler deploy`
   // SOBRESCREVE as vars do Worker com o que estiver neste arquivo, então o que
   // só existe no painel do Cloudflare some no primeiro deploy feito pela CLI.
