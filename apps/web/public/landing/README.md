@@ -9,7 +9,6 @@ converte pior que um espaço em branco honesto.
 
 | Arquivo             | Onde aparece                        | Formato sugerido |
 | ------------------- | ----------------------------------- | ---------------- |
-| `bancada.jpg`       | Hero, à direita                     | 1600×1200, JPG   |
 | `doceira.jpg`       | Depoimento, à esquerda              | 1000×1000, JPG   |
 | `og.jpg`            | Cartão do link no WhatsApp e redes  | 1200×630, JPG    |
 | `clientes/*.svg`    | Faixa de logos                      | SVG monocromático|
@@ -23,8 +22,10 @@ dele. Duas coisas que não são detalhe:
 - **`alt` descreve a cena**, não o produto. "Bancada de uma doceria com bolos
   prontos para entrega" — e não "bolo". Quem usa leitor de tela precisa receber
   a mesma informação que a foto dá.
-- **`priority` só na foto do hero.** Nas outras, ele atrapalha: o navegador
-  passa a baixar tudo de uma vez e a primeira imagem demora mais.
+- **`priority` só em foto da primeira dobra** — hoje, nenhuma: o hero não
+  usa foto, e sim o palco animado de `hero-stage.tsx`. Fora da primeira
+  dobra, ele atrapalha: o navegador passa a baixar tudo de uma vez e a
+  primeira imagem demora mais.
 
 ## Antes de subir qualquer foto
 
