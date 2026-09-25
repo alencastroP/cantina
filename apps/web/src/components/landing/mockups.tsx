@@ -1,6 +1,4 @@
 import {
-  BellIcon,
-  CalendarIcon,
   CheckIcon,
   ChatIcon,
   ClockIcon,
@@ -126,62 +124,6 @@ export function OrdersMockup({ className }: { className?: string }) {
         <span>Confirmação enviada no WhatsApp do cliente</span>
       </div>
     </Frame>
-  );
-}
-
-/**
- * Versão compacta para flutuar sobre a foto do hero.
- *
- * Menos linhas e tipografia maior: ele é lido de canto de olho, sobre uma
- * imagem, e não como conteúdo principal.
- */
-export function HeroCardMockup({ className }: { className?: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={cn(
-        'w-[17rem] rounded-panel border border-sand-200 bg-surface p-4 shadow-float sm:w-[19rem]',
-        className,
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-medium text-ink-muted">Sábado, 14h20</p>
-        <span className="flex items-center gap-1 rounded-full bg-clay-50 px-2 py-0.5 text-[0.65rem] font-medium text-clay-700">
-          <BellIcon size={11} /> 3 novos
-        </span>
-      </div>
-
-      <p className="mt-3 font-display text-2xl text-ink">
-        R$ 1.240<span className="text-base text-ink-muted">,00</span>
-      </p>
-      <p className="text-xs text-ink-muted">vendido hoje · 18 pedidos</p>
-
-      <div className="mt-4 space-y-2">
-        <div className="flex items-center gap-2.5 rounded-card bg-canvas px-2.5 py-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-berry-100 text-berry-700">
-            <CalendarIcon size={14} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[0.7rem] font-medium text-ink">
-              Bolo 2 andares · retirada 16h
-            </p>
-            <p className="text-[0.65rem] text-ink-muted">encomenda de domingo</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5 rounded-card bg-canvas px-2.5 py-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-honey-100 text-honey-700">
-            <ClockIcon size={14} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[0.7rem] font-medium text-ink">
-              Chantilly: 2 dias de estoque
-            </p>
-            <p className="text-[0.65rem] text-ink-muted">repor antes de sexta</p>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 

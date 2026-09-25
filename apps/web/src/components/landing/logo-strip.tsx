@@ -15,6 +15,9 @@
  *
  * Enquanto houver UM cliente só, o caminho honesto é apagar esta seção inteira
  * e deixar só o depoimento. Faixa com um logo repetido engana por omissão.
+ *
+ * Por isso ela está FORA da página hoje (ver `app/page.tsx`). Para voltar:
+ * logos reais aqui e `<LogoStrip />` de novo entre o hero e as abas.
  */
 export function LogoStrip() {
   return (

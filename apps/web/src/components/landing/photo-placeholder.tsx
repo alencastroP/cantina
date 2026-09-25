@@ -21,7 +21,7 @@ import { cn } from '../../lib/cn';
  *          width={1280}
  *          height={960}
  *          className="h-full w-full object-cover"
- *          priority            // só na foto do hero
+ *          priority            // só se a foto estiver na primeira dobra
  *        />
  *
  *   3. o `alt` descreve a CENA, não o produto: quem usa leitor de tela ganha a

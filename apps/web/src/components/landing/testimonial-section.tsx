@@ -18,6 +18,11 @@ import { PhotoPlaceholder } from './photo-placeholder';
  *   NAME   nome, como ela quiser ser chamada
  *   ROLE   "dona da [loja], [cidade]"
  *   FOTO   troque o PhotoPlaceholder por <Image> (ver o componente)
+ *
+ * Enquanto os três campos não existirem, a seção NÃO aparece. Um depoimento
+ * com colchetes no lugar da frase, publicado, diz à visitante que ninguém usa
+ * — o contrário do que a seção existe para dizer. Preencher os três campos é
+ * tudo o que precisa para ela voltar, no lugar certo da página.
  */
 
 /** PLACEHOLDER: substituir pelos três campos acima. */
@@ -28,6 +33,9 @@ const TESTIMONIAL = {
 };
 
 export function TestimonialSection() {
+  const { quote, name, role } = TESTIMONIAL;
+  if (!quote || !name || !role) return null;
+
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -57,21 +65,16 @@ export function TestimonialSection() {
 
             <blockquote className="mt-4">
               <p className="font-display text-xl leading-snug text-ink sm:text-2xl">
-                {TESTIMONIAL.quote ?? (
-                  <span className="text-ink-muted">
-                    [Depoimento da cliente atual, com a frase dela, colhida e autorizada por
-                    escrito.]
-                  </span>
-                )}
+                {quote}
               </p>
             </blockquote>
 
             <figcaption className="mt-6 border-t border-border pt-4">
               <p className="text-sm font-medium text-ink">
-                {TESTIMONIAL.name ?? <span className="text-ink-muted">[Nome]</span>}
+                {name}
               </p>
               <p className="text-sm text-ink-muted">
-                {TESTIMONIAL.role ?? '[dona da loja, cidade]'}
+                {role}
               </p>
             </figcaption>
           </div>
