@@ -5,14 +5,12 @@ import Image from 'next/image';
  *
  * Três docerias reais, com autorização para aparecer aqui. Os arquivos ficam
  * em `apps/web/public/landing/clientes/` — cada um é a foto de perfil que a
- * própria doceria usa (não um SVG monocromático), então `grayscale` é quem
- * garante que a faixa continua discreta em vez de virar um mosaico colorido
- * competindo com o resto da página.
+ * própria doceria usa, mostrada em cor mesmo (sem `grayscale`), e o nome
+ * aparece num rótulo ao passar o mouse.
  *
  * Para adicionar a próxima cliente: arquivo em `clientes/`, uma entrada em
- * `LOGOS` abaixo. `alt` é o nome da doceria — é o que aparece pra quem usa
- * leitor de tela, já que a imagem em si não tem texto legível depois do
- * grayscale.
+ * `LOGOS` abaixo. `name` vira tanto o `alt` da imagem quanto o texto do
+ * rótulo de hover.
  */
 const LOGOS = [
   { src: '/landing/clientes/unipane.jpg', name: 'UniPane' },
@@ -30,14 +28,20 @@ export function LogoStrip() {
 
         <ul className="appear mt-7 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
           {LOGOS.map((logo) => (
-            <li key={logo.name} className="flex justify-center">
+            <li key={logo.name} className="group relative flex justify-center">
               <Image
                 src={logo.src}
                 alt={logo.name}
                 width={96}
                 height={96}
-                className="h-14 w-14 rounded-full object-cover grayscale opacity-70"
+                className="h-14 w-14 rounded-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
               />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-2.5 py-1 text-[0.65rem] font-medium text-sand-50 opacity-0 shadow-soft transition-opacity duration-200 ease-out group-hover:opacity-100"
+              >
+                {logo.name}
+              </span>
             </li>
           ))}
         </ul>

@@ -96,12 +96,14 @@ export function Wordmark({
             para um lado. A amplitude foi medida na tela, não no arquivo: com
             menos que estes 1.35 (de um viewBox de 24) a curva sobrevive no SVG
             e some na rasterização aos 20px da barra lateral, que é o menor
-            tamanho em que a marca aparece. Os dois fios são espelhados no eixo
-            X e partem de alturas diferentes, porque vapor que sobe em paralelo
-            perfeito lê como duas antenas. */}
+            tamanho em que a marca aparece. Os dois fios ondulam para o mesmo
+            lado e partem de alturas diferentes, para não ficarem simétricos
+            feito duas antenas idênticas. O ponto inicial de cada `M` fica bem
+            acima da borda da tigela (y=11.5), abrindo um respiro entre o vapor
+            e o traço do bowl. */}
         <g className="brand-steam">
-          <path className="brand-wisp" d="M9.9 9.6q1.35-1.15 0-2.3t0-2.3" />
-          <path className="brand-wisp brand-wisp-b" d="M14.3 9.8q-1.35-1.15 0-2.3t0-2.3" />
+          <path className="brand-wisp" d="M9.9 9q1.35-1.15 0-2.3t0-2.3" />
+          <path className="brand-wisp brand-wisp-b" d="M14.3 9.2q1.35-1.15 0-2.3t0-2.3" />
         </g>
       </svg>
 
