@@ -90,6 +90,38 @@ describe('leitura do evento do Asaas', () => {
     );
   });
 
+  it('lê o checkout concluído do teste grátis', () => {
+    const event = asaasProvider.parseWebhook({
+      id: 'evt_003',
+      event: 'CHECKOUT_PAID',
+      checkout: { id: 'chk_001', customer: 'cus_001' },
+    });
+
+    assert.equal(event?.type, 'checkout.completed');
+    assert.equal(event?.providerCheckoutId, 'chk_001');
+    assert.equal(event?.providerCustomerId, 'cus_001');
+    assert.equal(event?.providerSubscriptionId, null);
+  });
+
+  it('liga a assinatura criada ao checkout que a gerou', () => {
+    const event = asaasProvider.parseWebhook({
+      id: 'evt_004',
+      event: 'SUBSCRIPTION_CREATED',
+      subscription: { id: 'sub_009', customer: 'cus_001', checkoutSession: 'chk_001' },
+    });
+
+    assert.equal(event?.type, 'subscription.created');
+    assert.equal(event?.providerSubscriptionId, 'sub_009');
+    assert.equal(event?.providerCheckoutId, 'chk_001');
+    assert.equal(event?.providerCustomerId, 'cus_001');
+  });
+
+  it('não confunde checkouts diferentes quando o evento vem sem id', () => {
+    const a = asaasProvider.parseWebhook({ event: 'CHECKOUT_PAID', checkout: { id: 'chk_a' } });
+    const b = asaasProvider.parseWebhook({ event: 'CHECKOUT_PAID', checkout: { id: 'chk_b' } });
+    assert.notEqual(a?.providerEventId, b?.providerEventId);
+  });
+
   it('aceita evento de assinatura sem pagamento', () => {
     const event = asaasProvider.parseWebhook({
       id: 'evt_002',

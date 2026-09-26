@@ -1,0 +1,2 @@
+ALTER TABLE "subscriptions" ADD COLUMN "provider_checkout_id" text;--> statement-breakpoint
+CREATE UNIQUE INDEX "subscriptions_provider_checkout_uq" ON "subscriptions" USING btree ("provider","provider_checkout_id");

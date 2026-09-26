@@ -11,7 +11,7 @@ converte pior que um espaço em branco honesto.
 | ------------------- | ----------------------------------- | ---------------- |
 | `doceira.jpg`       | Depoimento, à esquerda              | 1000×1000, JPG   |
 | `og.jpg`            | Cartão do link no WhatsApp e redes  | 1200×630, JPG    |
-| `clientes/*.svg`    | Faixa de logos                      | SVG monocromático|
+| `clientes/*.jpg`    | Faixa de logos                      | 1080×1080, JPG   |
 
 ## Como trocar o marcador pela foto
 
@@ -35,6 +35,9 @@ dele. Duas coisas que não são detalhe:
    bancada, etiqueta de entrega com endereço, tela de celular com conversa
    aberta. É o erro mais comum em foto de cozinha real, e a foto vai para a
    internet inteira.
-3. **Logo de cliente só com autorização da marca.** Enquanto não houver, a
-   faixa fica com os marcadores; com uma cliente só, o caminho honesto é
-   apagar a seção inteira e deixar o depoimento trabalhar sozinho.
+3. **Logo de cliente só com autorização da marca.** `clientes/` hoje tem
+   UniPane, Pulo do Gato e bea&canela. Pra próxima, arquivo aqui e uma
+   entrada em `LOGOS` (`src/components/landing/logo-strip.tsx`). Enquanto uma
+   marca não tiver autorização, ela não entra — e com menos de três logos o
+   caminho honesto é apagar a seção inteira e deixar o depoimento trabalhar
+   sozinho (o próprio componente registra isso).

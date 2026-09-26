@@ -146,10 +146,10 @@ export function Hero() {
               no celular, o palco já ocupa a largura toda. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-16 left-[58%] right-0 hidden rounded-l-[2.5rem] bg-berry-100/70 lg:block"
+            className="pointer-events-none absolute inset-y-16 left-[55%] right-0 hidden rounded-l-[2.5rem] bg-berry-100/70 lg:block"
           />
 
-          <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 pb-10 pt-12 sm:px-6 sm:pb-12 sm:pt-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)] lg:items-center lg:gap-12 lg:pb-16 lg:pt-20">
+          <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 pb-10 pt-12 sm:px-6 sm:pb-12 sm:pt-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.25fr)] lg:items-center lg:gap-12 lg:pb-16 lg:pt-20 xl:gap-16">
             <m.div
               variants={column}
               initial="hidden"

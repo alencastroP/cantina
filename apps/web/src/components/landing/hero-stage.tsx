@@ -216,7 +216,7 @@ export function HeroStage({ className }: { className?: string }) {
       role="img"
       aria-label="Ilustração do sistema: um pedido feito na vitrine chega pelo WhatsApp, entra no quadro de produção, baixa o insumo do estoque e soma no faturamento do mês."
       className={cn(
-        'relative isolate overflow-hidden rounded-panel bg-night p-3 shadow-float sm:p-4',
+        'relative isolate overflow-hidden rounded-panel bg-night p-3 shadow-float sm:p-5 lg:p-6',
         className,
       )}
     >
@@ -237,13 +237,13 @@ export function HeroStage({ className }: { className?: string }) {
 
       <Toast order={order} visible={shownStep === 1} />
 
-      <div aria-hidden="true" className="grid grid-cols-1 gap-3 sm:grid-cols-[8.75rem_minmax(0,1fr)]">
+      <div aria-hidden="true" className="grid grid-cols-1 gap-3 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-4 lg:grid-cols-[10.5rem_minmax(0,1fr)] lg:gap-5">
         <Phone order={order} step={shownStep} className="hidden sm:flex" />
 
         <LayoutGroup>
           <div className="overflow-hidden rounded-card border border-sand-700/40 bg-surface">
-            <div className="flex items-center justify-between border-b border-border bg-sand-100 px-3 py-2">
-              <p className="text-[0.7rem] font-medium text-ink-soft">Pedidos · sábado</p>
+            <div className="flex items-center justify-between border-b border-border bg-sand-100 px-3 py-2 sm:px-4 sm:py-2.5">
+              <p className="text-[0.7rem] font-medium text-ink-soft sm:text-xs">Pedidos · sábado</p>
               <span className="flex items-center gap-1.5 text-[0.62rem] font-medium text-olive-700">
                 <span className="relative flex h-1.5 w-1.5">
                   {reduced ? null : (
@@ -255,7 +255,7 @@ export function HeroStage({ className }: { className?: string }) {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5 p-1.5 sm:gap-2 sm:p-2">
+            <div className="grid grid-cols-3 gap-1.5 p-1.5 sm:gap-2.5 sm:p-2.5 lg:gap-3 lg:p-3">
               <Column title="Novos" count={newColumn.length} highlight={shownStep === 1}>
                 {newColumn.map((card) => (
                   <Card
@@ -286,7 +286,7 @@ export function HeroStage({ className }: { className?: string }) {
         </LayoutGroup>
       </div>
 
-      <div aria-hidden="true" className="mt-3 grid grid-cols-2 gap-3">
+      <div aria-hidden="true" className="mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:gap-4 lg:mt-5 lg:gap-5">
         <StockCard
           name={order.stock.name}
           level={stockLevel}
@@ -318,7 +318,7 @@ function Phone({ order, step, className }: { order: Order; step: number; classNa
   return (
     <div
       className={cn(
-        'flex-col rounded-[1.4rem] border border-sand-700 bg-sand-800 p-1.5',
+        'flex-col rounded-[1.4rem] border border-sand-700 bg-sand-800 p-1.5 lg:rounded-[1.6rem] lg:p-2',
         className,
       )}
     >
@@ -350,7 +350,7 @@ function Phone({ order, step, className }: { order: Order; step: number; classNa
                     : 'bg-gradient-to-br from-berry-200 via-berry-100 to-honey-100',
                 )}
               />
-              <p className="mt-2 line-clamp-2 text-[0.66rem] font-medium leading-tight text-ink">
+              <p className="mt-2 line-clamp-2 text-[0.66rem] font-medium leading-tight text-ink lg:mt-2.5 lg:text-[0.72rem]">
                 {order.product}
               </p>
               <p className="mt-0.5 text-[0.62rem] text-ink-muted" data-numeric>
@@ -388,7 +388,7 @@ function Toast({ order, visible }: { order: Order; visible: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-3 top-3 z-10 flex justify-end sm:inset-x-4 sm:top-4"
+      className="pointer-events-none absolute inset-x-3 top-3 z-10 flex justify-end sm:inset-x-5 sm:top-5 lg:inset-x-6 lg:top-6"
     >
       <AnimatePresence>
         {visible ? (
@@ -435,17 +435,17 @@ function Column({
         /* Altura fixa: cartões entrando e saindo não podem empurrar a página.
            E sem `overflow-hidden` — o cartão em trânsito passa por cima da
            divisa entre colunas, e cortá-lo ali quebraria a ilusão. */
-        'flex h-[12.5rem] flex-col rounded-control bg-canvas p-1 transition-colors duration-500 sm:h-[12rem] sm:p-1.5',
+        'flex h-[13rem] flex-col rounded-control bg-canvas p-1 transition-colors duration-500 sm:h-[14rem] sm:p-2 lg:h-[15.5rem] lg:p-2.5',
         highlight && 'bg-clay-50',
       )}
     >
-      <div className="flex items-center justify-between px-0.5 pb-1.5">
-        <p className="text-[0.6rem] font-medium text-ink-soft sm:text-[0.65rem]">{title}</p>
+      <div className="flex items-center justify-between px-0.5 pb-1.5 sm:pb-2">
+        <p className="text-[0.6rem] font-medium text-ink-soft sm:text-[0.7rem]">{title}</p>
         <span className="rounded-full bg-sand-200 px-1.5 text-[0.55rem] font-medium text-ink-muted" data-numeric>
           {count}
         </span>
       </div>
-      <div className="flex flex-col gap-1.5">{children}</div>
+      <div className="flex flex-col gap-1.5 sm:gap-2">{children}</div>
     </div>
   );
 }
@@ -479,12 +479,12 @@ function Card({
       exit={exiting ? { opacity: 0, scale: 0.9, transition: { duration: 0.25 } } : undefined}
       transition={{ type: 'spring', stiffness: 260, damping: 28 }}
       className={cn(
-        'rounded-[0.5rem] border border-l-2 border-border bg-surface px-1.5 py-1.5 shadow-soft sm:px-2',
+        'rounded-[0.5rem] border border-l-2 border-border bg-surface px-1.5 py-1.5 shadow-soft sm:px-2.5 sm:py-2 lg:px-3 lg:py-2.5',
         order.tone === 'olive' ? 'border-l-olive-500' : 'border-l-clay-500',
       )}
     >
       <div className="flex items-center justify-between gap-1">
-        <p className="text-[0.55rem] font-medium text-ink-muted" data-numeric>
+        <p className="text-[0.55rem] font-medium text-ink-muted sm:text-[0.6rem]" data-numeric>
           {order.code}
         </p>
         {done ? (
@@ -493,10 +493,10 @@ function Card({
           </span>
         ) : null}
       </div>
-      <p className="mt-0.5 line-clamp-2 text-[0.6rem] font-medium leading-tight text-ink sm:text-[0.66rem]">
+      <p className="mt-0.5 line-clamp-2 text-[0.6rem] font-medium leading-tight text-ink sm:mt-1 sm:text-[0.7rem] lg:text-xs">
         {order.product}
       </p>
-      <p className="mt-0.5 truncate text-[0.55rem] text-ink-muted">{order.detail}</p>
+      <p className="mt-0.5 truncate text-[0.55rem] text-ink-muted sm:mt-1 sm:text-[0.6rem]">{order.detail}</p>
     </m.div>
   );
 }
@@ -505,14 +505,14 @@ function StockCard({ name, level, highlight }: { name: string; level: number; hi
   return (
     <div
       className={cn(
-        'rounded-card border bg-surface p-2.5 transition-colors duration-500 sm:p-3',
+        'rounded-card border bg-surface p-2.5 transition-colors duration-500 sm:p-4',
         highlight ? 'border-honey-300' : 'border-sand-700/40',
       )}
     >
       <div className="flex items-center gap-1.5 text-[0.62rem] font-medium text-ink-muted">
         <StockIcon size={12} /> Estoque
       </div>
-      <div className="mt-1.5 flex items-baseline justify-between gap-2">
+      <div className="mt-1.5 flex items-baseline justify-between gap-2 sm:mt-2">
         <AnimatePresence mode="wait" initial={false}>
           <m.p
             key={name}
@@ -520,16 +520,16 @@ function StockCard({ name, level, highlight }: { name: string; level: number; hi
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="truncate text-xs font-medium text-ink"
+            className="truncate text-xs font-medium text-ink sm:text-sm"
           >
             {name}
           </m.p>
         </AnimatePresence>
-        <p className="shrink-0 text-xs font-medium text-ink" data-numeric>
+        <p className="shrink-0 text-xs font-medium text-ink sm:text-sm" data-numeric>
           {kilos.format(level)} kg
         </p>
       </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand-200">
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand-200 sm:mt-3 sm:h-2">
         {/* `scaleX`, não `width`: a barra encolhe no compositor, sem refazer
             layout a cada quadro. */}
         <m.div
@@ -558,14 +558,14 @@ function MonthCard({ total, orders, highlight }: { total: number; orders: number
   return (
     <div
       className={cn(
-        'rounded-card border p-2.5 transition-colors duration-500 sm:p-3',
+        'rounded-card border p-2.5 transition-colors duration-500 sm:p-4',
         highlight ? 'border-honey-300 bg-honey-50' : 'border-sand-700/40 bg-surface',
       )}
     >
       <div className="flex items-center gap-1.5 text-[0.62rem] font-medium text-ink-muted">
         <FinanceIcon size={12} /> Setembro até agora
       </div>
-      <p className="mt-1 font-display text-lg leading-tight text-ink sm:text-xl" data-numeric>
+      <p className="mt-1 font-display text-lg leading-tight text-ink sm:mt-1.5 sm:text-2xl" data-numeric>
         R$ <m.span>{shown}</m.span>
       </p>
       <p className="mt-1 truncate text-[0.58rem] text-ink-muted" data-numeric>
@@ -584,7 +584,7 @@ function MonthCard({ total, orders, highlight }: { total: number; orders: number
  */
 function Trail({ step, round, animate }: { step: number; round: number; animate: boolean }) {
   return (
-    <ol aria-hidden="true" className="mt-4 grid grid-cols-5 gap-1.5 px-0.5 sm:gap-2">
+    <ol aria-hidden="true" className="mt-4 grid grid-cols-5 gap-1.5 px-0.5 sm:mt-5 sm:gap-3 lg:mt-6">
       {STEPS.map((entry, index) => {
         const past = index < step;
         const current = index === step;
@@ -606,7 +606,7 @@ function Trail({ step, round, animate }: { step: number; round: number; animate:
             </div>
             <p
               className={cn(
-                'mt-1.5 truncate text-[0.58rem] font-medium transition-colors duration-300 sm:text-[0.66rem]',
+                'mt-1.5 truncate text-[0.58rem] font-medium transition-colors duration-300 sm:mt-2 sm:text-[0.7rem]',
                 current ? 'text-sand-50' : past ? 'text-sand-400' : 'text-sand-600',
               )}
             >

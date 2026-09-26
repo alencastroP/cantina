@@ -8,6 +8,7 @@ import { FinalCta } from '../components/landing/final-cta';
 import { FinanceCard } from '../components/landing/finance-card';
 import { Hero } from '../components/landing/hero';
 import { IntegrationsSection } from '../components/landing/integrations-section';
+import { LogoStrip } from '../components/landing/logo-strip';
 import { OnboardingTimeline } from '../components/landing/onboarding-timeline';
 import { SiteFooter } from '../components/landing/site-footer';
 import { SiteHeader } from '../components/landing/site-header';
@@ -31,21 +32,16 @@ import { UnifiedFlow } from '../components/landing/unified-flow';
  *
  *    1 cabeçalho        as duas portas: entrar e experimentar
  *    2 hero             o que é, para quem, e a condição do teste sem letra miúda
- *    3 abas             os quatro módulos, sem quatro telas de rolagem
- *    4 dois cartões     o que caderno nenhum resolve: receber e saber o custo
- *    5 financeiro       "e valeu a pena?", que é a pergunta do fim do mês
- *    6 comparativo      o reconhecimento — a semana dela, descrita
- *    7 integrações      não vai trocar o WhatsApp, vai parar de usá-lo como caderno
- *    8 corrente          a promessa do hero sustentada: uma parte alimenta a outra
- *    9 depoimento       prova de gente — só aparece com a frase real preenchida
- *   10 como começar     desarma o medo de ter que cadastrar tudo sozinha
- *   11 dúvidas          o que trava a decisão, respondido sem promessa falsa
- *
- * A faixa de logos (`logo-strip.tsx`) está fora de propósito. Com uma cliente
- * só, seis caixas tracejadas logo abaixo do hero diziam "ninguém usa ainda"
- * no ponto de maior atenção da página — e o próprio componente já pedia para
- * sair nesse caso. Ela volta entre o hero e as abas quando houver logos
- * autorizados de verdade (três, no mínimo, para a faixa não parecer vazia).
+ *    3 faixa de logos   prova social rápida, com as docerias que já usam
+ *    4 abas             os quatro módulos, sem quatro telas de rolagem
+ *    5 dois cartões     o que caderno nenhum resolve: receber e saber o custo
+ *    6 financeiro       "e valeu a pena?", que é a pergunta do fim do mês
+ *    7 comparativo      o reconhecimento — a semana dela, descrita
+ *    8 integrações      não vai trocar o WhatsApp, vai parar de usá-lo como caderno
+ *    9 corrente          a promessa do hero sustentada: uma parte alimenta a outra
+ *   10 depoimento       prova de gente — só aparece com a frase real preenchida
+ *   11 como começar     desarma o medo de ter que cadastrar tudo sozinha
+ *   12 dúvidas          o que trava a decisão, respondido sem promessa falsa
  */
 
 export const metadata: Metadata = {
@@ -91,6 +87,7 @@ export default function HomePage() {
 
       <main id="conteudo">
         <Hero />
+        <LogoStrip />
         <FeatureTabs />
         <DualCards />
         <FinanceCard />

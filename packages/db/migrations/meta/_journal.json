@@ -22,6 +22,13 @@
       "when": 1790369030739,
       "tag": "0002_purple_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790378261889,
+      "tag": "0003_chief_blink",
+      "breakpoints": true
     }
   ]
 }

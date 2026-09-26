@@ -1,24 +1,25 @@
+import Image from 'next/image';
+
 /**
  * Faixa de logos de clientes.
  *
- * Todas as posições são PLACEHOLDER. Logo de cliente numa landing exige
- * autorização por escrito de quem é dono da marca — e inventar seis nomes de
- * doceria para preencher a faixa é propaganda enganosa, não rascunho.
+ * Três docerias reais, com autorização para aparecer aqui. Os arquivos ficam
+ * em `apps/web/public/landing/clientes/` — cada um é a foto de perfil que a
+ * própria doceria usa (não um SVG monocromático), então `grayscale` é quem
+ * garante que a faixa continua discreta em vez de virar um mosaico colorido
+ * competindo com o resto da página.
  *
- * Como preencher, quando houver autorização:
- *
- *   1. arquivo SVG (ou PNG @2x) em `apps/web/public/landing/clientes/`;
- *   2. troque o `<span>` do marcador por `<Image ... className="h-7 w-auto" />`
- *      com `alt` = nome da doceria;
- *   3. mantenha `grayscale opacity-60`: a faixa é prova social, não vitrine de
- *      marcas — seis logos coloridos brigam com o resto da página.
- *
- * Enquanto houver UM cliente só, o caminho honesto é apagar esta seção inteira
- * e deixar só o depoimento. Faixa com um logo repetido engana por omissão.
- *
- * Por isso ela está FORA da página hoje (ver `app/page.tsx`). Para voltar:
- * logos reais aqui e `<LogoStrip />` de novo entre o hero e as abas.
+ * Para adicionar a próxima cliente: arquivo em `clientes/`, uma entrada em
+ * `LOGOS` abaixo. `alt` é o nome da doceria — é o que aparece pra quem usa
+ * leitor de tela, já que a imagem em si não tem texto legível depois do
+ * grayscale.
  */
+const LOGOS = [
+  { src: '/landing/clientes/unipane.jpg', name: 'UniPane' },
+  { src: '/landing/clientes/pulo-do-gato.jpg', name: 'Pulo do Gato' },
+  { src: '/landing/clientes/bea-canela.jpg', name: 'bea&canela' },
+];
+
 export function LogoStrip() {
   return (
     <section className="border-y border-sand-200 bg-sand-50/60 py-10">
@@ -27,13 +28,16 @@ export function LogoStrip() {
           Docerias que já trabalham assim
         </h2>
 
-        <ul className="appear mt-7 grid grid-cols-2 items-center gap-x-6 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">
-          {Array.from({ length: 6 }, (_, index) => (
-            <li key={index} className="flex justify-center">
-              {/* PLACEHOLDER: logo real do cliente, com autorização de uso. */}
-              <span className="flex h-9 w-full max-w-[9rem] items-center justify-center rounded-control border border-dashed border-sand-400 text-[0.65rem] font-medium uppercase tracking-widest text-sand-500">
-                logo {index + 1}
-              </span>
+        <ul className="appear mt-7 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+          {LOGOS.map((logo) => (
+            <li key={logo.name} className="flex justify-center">
+              <Image
+                src={logo.src}
+                alt={logo.name}
+                width={96}
+                height={96}
+                className="h-14 w-14 rounded-full object-cover grayscale opacity-70"
+              />
             </li>
           ))}
         </ul>

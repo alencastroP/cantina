@@ -120,6 +120,14 @@ export const subscriptions = pgTable(
     provider: text('provider').notNull().default('asaas'),
     providerCustomerId: text('provider_customer_id'),
     providerSubscriptionId: text('provider_subscription_id'),
+    /**
+     * Checkout hospedado que dá origem à assinatura (cadastro público).
+     *
+     * No teste grátis a assinatura do gateway só passa a existir quando a
+     * pessoa conclui o checkout — até lá, este é o único vínculo entre a
+     * linha daqui e o que acontece lá, e é por ele que o webhook a encontra.
+     */
+    providerCheckoutId: text('provider_checkout_id'),
     status: subscriptionStatusEnum('status').notNull().default('trialing'),
     currentPeriodStart: timestamp('current_period_start', { withTimezone: true, mode: 'date' }),
     currentPeriodEnd: timestamp('current_period_end', { withTimezone: true, mode: 'date' }),
@@ -131,6 +139,7 @@ export const subscriptions = pgTable(
     index('subscriptions_tenant_idx').on(table.tenantId),
     index('subscriptions_status_idx').on(table.status),
     uniqueIndex('subscriptions_provider_uq').on(table.provider, table.providerSubscriptionId),
+    uniqueIndex('subscriptions_provider_checkout_uq').on(table.provider, table.providerCheckoutId),
   ],
 );
 

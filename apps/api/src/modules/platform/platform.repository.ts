@@ -241,6 +241,38 @@ export async function findSubscriptionByProviderId(tx: Executor, providerId: str
   return rows[0] ?? null;
 }
 
+export async function findSubscriptionByCheckoutId(tx: Executor, checkoutId: string) {
+  const rows = await tx
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.providerCheckoutId, checkoutId))
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
+/**
+ * Assinatura de checkout concluído que ainda não sabe o id dela no gateway.
+ *
+ * Plano B do vínculo: se o evento da assinatura chegar sem `checkoutSession`,
+ * o cliente (que o evento do checkout já gravou) é o que resta para casar.
+ */
+export async function findUnlinkedSubscriptionByCustomer(tx: Executor, customerId: string) {
+  const rows = await tx
+    .select()
+    .from(subscriptions)
+    .where(
+      and(
+        eq(subscriptions.providerCustomerId, customerId),
+        isNull(subscriptions.providerSubscriptionId),
+      ),
+    )
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
 export async function insertSubscription(
   tx: Executor,
   values: typeof subscriptions.$inferInsert,

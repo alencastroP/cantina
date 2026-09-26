@@ -32,7 +32,49 @@ import * as repository from './signup.repository';
  */
 export const TRIAL_DAYS = 15;
 
+/**
+ * Folga entre a primeira cobrança e o fim do teste visto pelo job de
+ * cobrança (`billing.jobs.ts`). Sem ela, o job das 4h do dia da cobrança
+ * poria a loja em somente-leitura antes de o Asaas chegar a cobrar o cartão.
+ */
+const FIRST_CHARGE_GRACE_DAYS = 2;
+
 const MIN_FORM_TIME_MS = 2500;
+
+/** Data de hoje no calendário do Asaas (Brasil), não no do servidor. */
+function todayInBrazil(now: Date): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(now);
+}
+
+function addDays(isoDate: string, days: number): string {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+/** Meia-noite de uma data `AAAA-MM-DD` no horário de Brasília. */
+function brazilMidnight(isoDate: string): Date {
+  return new Date(`${isoDate}T03:00:00Z`);
+}
+
+/**
+ * Quando o cartão é cobrado pela primeira vez.
+ *
+ * A data é sempre FUTURA, e é isso que garante que o cadastro não cobra
+ * nada: no Asaas, vencimento no dia de hoje cobra na hora.
+ *
+ * Exportado para o teste.
+ */
+export function firstChargeDateFrom(now: Date): string {
+  return addDays(todayInBrazil(now), TRIAL_DAYS);
+}
+
+/** Fim do teste visto pelo job de cobrança: a primeira cobrança mais a folga. */
+export function trialEndsAtFor(firstChargeAt: Date): Date {
+  const end = new Date(firstChargeAt);
+  end.setUTCDate(end.getUTCDate() + FIRST_CHARGE_GRACE_DAYS);
+  return end;
+}
 
 /**
  * Filtro do robô preguiçoso (§"Sinais anti-robô" do contrato). Fraco de
@@ -141,41 +183,41 @@ export async function startTrial(
     hostname: `${tenant.slug}.${env.ROOT_DOMAIN}`,
   });
 
+  const firstChargeDate = firstChargeDateFrom(new Date());
+
   let checkoutUrl: string;
   try {
-    const customer = await billingProvider.createCustomer({
-      tenantId: tenant.id,
-      name: input.ownerName,
-      email: input.email,
-      document: input.document,
-      phone: toLocalPhone(input.phone),
-    });
-
-    const created = await billingProvider.createSubscription({
-      providerCustomerId: customer.providerCustomerId,
-      planCode: plan.code,
+    // Checkout hospedado, só cartão, com a primeira cobrança daqui a
+    // TRIAL_DAYS: o cartão é validado agora e nada é cobrado. O número do
+    // cartão é digitado na página do provedor e nunca passa por aqui (§3.7).
+    const checkout = await billingProvider.createRecurringCheckout({
+      externalReference: tenant.id,
+      planName: plan.name,
       amountCents: plan.priceCents,
-      // Quem paga escolhe PIX, boleto ou cartão na própria página do
-      // provedor — é o que mantém o número do cartão fora do Cantina (§3.7).
-      billingType: 'UNDEFINED',
-      // Hoje, não "+3 dias" como a contratação pelo painel: só com
-      // vencimento no dia o Asaas gera a primeira fatura na hora, e é o
-      // link dela que vira `checkoutUrl`.
-      nextDueDate: new Date().toISOString().slice(0, 10),
+      firstChargeDate,
+      customer: {
+        name: input.ownerName,
+        document: input.document,
+        email: input.email,
+        phone: toLocalPhone(input.phone),
+      },
+      successUrl: `${env.WEB_URL}/teste-gratis/confirmado`,
+      cancelUrl: `${env.WEB_URL}/teste-gratis`,
+      expiredUrl: `${env.WEB_URL}/teste-gratis`,
     });
 
-    if (!created.checkoutUrl) throw billingUnavailable();
-    checkoutUrl = created.checkoutUrl;
+    if (!checkout.checkoutUrl) throw billingUnavailable();
+    checkoutUrl = checkout.checkoutUrl;
 
+    // A assinatura do gateway ainda não existe — nasce quando a pessoa
+    // conclui o checkout. Até lá, o checkout é o vínculo (ver webhook).
     await platformRepository.insertSubscription(tx, {
       tenantId: tenant.id,
       planId: plan.id,
       provider: billingProvider.name,
-      providerCustomerId: customer.providerCustomerId,
-      providerSubscriptionId: created.providerSubscriptionId,
-      // Sempre `trialing` aqui, independente do que o Asaas mapeou: até o
-      // webhook confirmar o primeiro pagamento, a conta não é usável (§3.8).
+      providerCheckoutId: checkout.providerCheckoutId,
       status: 'trialing',
+      trialEndsAt: brazilMidnight(firstChargeDate),
     });
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -197,7 +239,7 @@ export async function startTrial(
 }
 
 /* -------------------------------------------------------------------------- */
-/* Liberação — chamada pelo webhook quando o gateway confirma o pagamento     */
+/* Liberação — chamada pelo webhook quando o cartão é validado no checkout    */
 /* -------------------------------------------------------------------------- */
 
 /**
@@ -206,6 +248,8 @@ export async function startTrial(
  * Não faz nada para tenant que não veio desta rota: `pendingConfirmationAt`
  * é exatamente essa marca, e ausência dela é sinal de "nada a liberar aqui"
  * — inclusive numa segunda chamada, depois que a primeira já limpou o campo.
+ * É o que deixa o webhook chamá-la tanto no checkout concluído quanto na
+ * assinatura criada, sem saber qual dos dois chega primeiro.
  */
 export async function releasePendingSignup(tx: Transaction, tenantId: string): Promise<void> {
   const [tenant] = await tx
@@ -220,12 +264,13 @@ export async function releasePendingSignup(tx: Transaction, tenantId: string): P
 
   if (!tenant?.pendingConfirmationAt) return;
 
-  const trialEndsAt = new Date();
-  trialEndsAt.setUTCDate(trialEndsAt.getUTCDate() + TRIAL_DAYS);
+  const subscription = await platformRepository.findSubscriptionByTenant(tx, tenantId);
+  const firstChargeAt =
+    subscription?.trialEndsAt ?? brazilMidnight(firstChargeDateFrom(new Date()));
 
   await tx
     .update(tenants)
-    .set({ pendingConfirmationAt: null, trialEndsAt })
+    .set({ pendingConfirmationAt: null, trialEndsAt: trialEndsAtFor(firstChargeAt) })
     .where(eq(tenants.id, tenantId));
 
   const [owner] = await tx
@@ -256,15 +301,23 @@ export async function releasePendingSignup(tx: Transaction, tenantId: string): P
   });
 
   const link = `${env.WEB_URL}/convite?tenant=${tenant.slug}&token=${token}`;
+  const chargeDay = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(firstChargeAt);
 
   await mailProvider.send({
     to: owner.email,
-    subject: 'Seu teste grátis do Cantina está liberado',
+    subject: 'Seu teste grátis do Cantina começou',
     text:
-      `Seu pagamento foi confirmado! Defina sua senha para acessar o painel de ${tenant.name}: ` +
-      `${link}\n\nO link vale por 7 dias.`,
+      `Seu cartão foi validado e nada foi cobrado. Defina sua senha para acessar o painel de ${tenant.name}: ` +
+      `${link}\n\nO link vale por 7 dias.\n\n` +
+      `A primeira cobrança acontece em ${chargeDay}. Se cancelar pelo painel antes disso, nada é cobrado.`,
     html:
-      `<p>Seu pagamento foi confirmado! Defina sua senha para acessar o painel de <strong>${tenant.name}</strong>:</p>` +
-      `<p><a href="${link}">Definir minha senha</a></p><p>O link vale por 7 dias.</p>`,
+      `<p>Seu cartão foi validado e nada foi cobrado. Defina sua senha para acessar o painel de <strong>${tenant.name}</strong>:</p>` +
+      `<p><a href="${link}">Definir minha senha</a></p><p>O link vale por 7 dias.</p>` +
+      `<p>A primeira cobrança acontece em <strong>${chargeDay}</strong>. Se cancelar pelo painel antes disso, nada é cobrado.</p>`,
   });
 }

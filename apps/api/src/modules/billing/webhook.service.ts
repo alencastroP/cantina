@@ -92,6 +92,11 @@ export async function handleAsaas(
  * dele é o jeito mais rápido de garantir que não pague.
  */
 async function apply(tx: Transaction, event: BillingEvent, payload: unknown): Promise<void> {
+  if (event.type === 'checkout.completed' || event.type === 'subscription.created') {
+    await applyCheckoutLifecycle(tx, event);
+    return;
+  }
+
   if (!event.providerSubscriptionId) {
     logger.warn({ type: event.type }, 'Evento sem assinatura, nada a aplicar');
     return;
@@ -135,9 +140,6 @@ async function apply(tx: Transaction, event: BillingEvent, payload: unknown): Pr
       });
 
       await setTenantStatus(tx, subscription.tenantId, 'active');
-      // Sem efeito para assinatura que não veio do cadastro público —
-      // `releasePendingSignup` só age quando `pendingConfirmationAt` existe.
-      await releasePendingSignup(tx, subscription.tenantId);
       break;
     }
 
@@ -163,6 +165,45 @@ async function apply(tx: Transaction, event: BillingEvent, payload: unknown): Pr
       break;
     }
   }
+}
+
+/**
+ * Checkout do teste grátis concluído, e a assinatura que ele gera.
+ *
+ * O Asaas manda os dois em eventos separados, sem ordem garantida:
+ * `CHECKOUT_PAID` diz "o cartão foi validado" e traz o checkout (e o
+ * cliente); `SUBSCRIPTION_CREATED` traz o id da assinatura, de que a
+ * cobrança ao fim do teste e o cancelamento pelo painel dependem. Cada um
+ * grava o que sabe, e qualquer um dos dois libera a conta — a liberação é
+ * idempotente.
+ *
+ * Evento que não casa com nada é normal: `SUBSCRIPTION_CREATED` também chega
+ * para assinaturas criadas pelo painel, que não nasceram de checkout.
+ */
+async function applyCheckoutLifecycle(tx: Transaction, event: BillingEvent): Promise<void> {
+  const subscription = event.providerCheckoutId
+    ? await repository.findSubscriptionByCheckoutId(tx, event.providerCheckoutId)
+    : event.type === 'subscription.created' && event.providerCustomerId
+      ? await repository.findUnlinkedSubscriptionByCustomer(tx, event.providerCustomerId)
+      : null;
+
+  if (!subscription) {
+    logger.debug({ type: event.type }, 'Evento de checkout sem assinatura correspondente');
+    return;
+  }
+
+  const link: Parameters<typeof repository.updateSubscription>[2] = {};
+  if (event.providerCustomerId && !subscription.providerCustomerId) {
+    link.providerCustomerId = event.providerCustomerId;
+  }
+  if (event.type === 'subscription.created' && event.providerSubscriptionId) {
+    link.providerSubscriptionId = event.providerSubscriptionId;
+  }
+  if (Object.keys(link).length > 0) {
+    await repository.updateSubscription(tx, subscription.id, link);
+  }
+
+  await releasePendingSignup(tx, subscription.tenantId);
 }
 
 function invoiceStatusFor(type: BillingEvent['type']) {

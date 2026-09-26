@@ -9,7 +9,9 @@ process.env.JWT_ACCESS_SECRET ??= 'x'.repeat(32);
 process.env.JWT_REFRESH_SECRET ??= 'y'.repeat(32);
 
 const { trialSignupRequestSchema } = await import('@cantina/contracts');
-const { assertNotBot } = await import('./signup.service');
+const { assertNotBot, firstChargeDateFrom, trialEndsAtFor, TRIAL_DAYS } = await import(
+  './signup.service'
+);
 
 /**
  * Este é o único endpoint público, anônimo, que cria conta — as duas coisas
@@ -50,6 +52,38 @@ describe('validação do corpo do cadastro', () => {
   it('recusa telefone curto demais', () => {
     const result = trialSignupRequestSchema.safeParse({ ...valid, phone: '119876' });
     assert.equal(result.success, false);
+  });
+});
+
+/**
+ * A regra que impede cobrança no cadastro: no Asaas, vencimento no dia de hoje
+ * cobra na hora. A data da primeira cobrança tem que ser futura SEMPRE, no
+ * calendário do Brasil — inclusive entre 21h e meia-noite, quando o servidor
+ * (UTC) já está no dia seguinte.
+ */
+describe('data da primeira cobrança', () => {
+  it(`fica ${TRIAL_DAYS} dias à frente de hoje`, () => {
+    assert.equal(firstChargeDateFrom(new Date('2026-09-25T15:00:00Z')), '2026-10-10');
+  });
+
+  it('usa o dia do Brasil, não o do servidor, às 22h de Brasília', () => {
+    // 01:00 UTC do dia 26 = 22:00 do dia 25 em Brasília.
+    assert.equal(firstChargeDateFrom(new Date('2026-09-26T01:00:00Z')), '2026-10-10');
+  });
+
+  it('atravessa virada de mês e de ano', () => {
+    assert.equal(firstChargeDateFrom(new Date('2026-12-25T15:00:00Z')), '2027-01-09');
+  });
+
+  it('nunca é hoje', () => {
+    const now = new Date();
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(now);
+    assert.notEqual(firstChargeDateFrom(now), today);
+  });
+
+  it('deixa folga antes de o job de cobrança encerrar o teste', () => {
+    const charge = new Date('2026-10-10T03:00:00Z');
+    assert.ok(trialEndsAtFor(charge) > charge);
   });
 });
 

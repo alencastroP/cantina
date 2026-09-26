@@ -9,8 +9,11 @@ import type {
   BillingProvider,
   BillingSubscription,
   CreateCustomerInput,
+  CreateRecurringCheckoutInput,
   CreateSubscriptionInput,
+  RecurringCheckout,
 } from './billing';
+import { CHECKOUT_ITEM_IMAGE_BASE64 } from './checkout-image';
 
 /**
  * Adaptador do Asaas (P1, módulo 11).
@@ -76,26 +79,20 @@ interface AsaasSubscriptionResponse {
   nextDueDate?: string;
 }
 
-interface AsaasPaymentListResponse {
-  data?: Array<{ invoiceUrl?: string }>;
+interface AsaasCheckoutResponse {
+  id: string;
+  link?: string;
 }
 
 /**
- * Link da primeira fatura de uma assinatura recém-criada.
- *
- * `POST /subscriptions` não devolve URL de cobrança nenhuma — o Asaas gera a
- * fatura à parte, e só na hora do vencimento. Com `nextDueDate` igual a hoje
- * (a única forma de cobrança imediata, ver `criando-uma-assinatura` na
- * documentação do Asaas), a primeira fatura já existe no instante seguinte
- * e este é o jeito documentado de pegá-la: listar as faturas da assinatura,
- * pegar a mais recente.
+ * Validade do link de checkout: o máximo que o Asaas aceita (24h). É também
+ * o prazo do job que apaga cadastro nunca confirmado, então um checkout
+ * vencido e um tenant pendente saem de cena juntos.
  */
-async function fetchFirstInvoiceUrl(subscriptionId: string): Promise<string | null> {
-  const list = await call<AsaasPaymentListResponse>(
-    `/payments?subscription=${encodeURIComponent(subscriptionId)}&limit=1`,
-  );
-  return list.data?.[0]?.invoiceUrl ?? null;
-}
+const CHECKOUT_MINUTES_TO_EXPIRE = 1440;
+
+/** O Asaas limita o nome do item a 30 caracteres. */
+const ITEM_NAME_MAX = 30;
 
 function mapSubscriptionStatus(status: string | undefined): BillingSubscription['status'] {
   switch (status) {
@@ -123,6 +120,10 @@ const EVENT_MAP: Record<string, BillingEventType> = {
   PAYMENT_REFUNDED: 'payment.refunded',
   PAYMENT_DELETED: 'payment.refunded',
   SUBSCRIPTION_DELETED: 'subscription.canceled',
+  // Teste grátis: checkout concluído = cartão validado, sem cobrança. A
+  // assinatura que ele gera chega em seguida, em evento próprio.
+  CHECKOUT_PAID: 'checkout.completed',
+  SUBSCRIPTION_CREATED: 'subscription.created',
 };
 
 interface AsaasWebhookPayload {
@@ -136,7 +137,8 @@ interface AsaasWebhookPayload {
     dateCreated?: string;
     invoiceUrl?: string;
   };
-  subscription?: { id?: string };
+  subscription?: { id?: string; customer?: string; checkoutSession?: string };
+  checkout?: { id?: string; customer?: string };
 }
 
 export const asaasProvider: BillingProvider = {
@@ -177,8 +179,53 @@ export const asaasProvider: BillingProvider = {
       providerSubscriptionId: created.id,
       status: mapSubscriptionStatus(created.status ?? 'ACTIVE'),
       currentPeriodEnd: created.nextDueDate ? new Date(`${created.nextDueDate}T00:00:00Z`) : null,
-      checkoutUrl: await fetchFirstInvoiceUrl(created.id),
     };
+  },
+
+  /**
+   * Checkout recorrente, só cartão.
+   *
+   * Cartão e não Pix porque o que se quer é um cartão guardado que o Asaas
+   * cobra sozinho quando o teste acabar — Pix exigiria a pessoa voltar para
+   * pagar. O cliente do gateway é criado pelo próprio checkout a partir de
+   * `customerData` (a API não aceita um cliente já existente aqui).
+   */
+  async createRecurringCheckout(input: CreateRecurringCheckoutInput): Promise<RecurringCheckout> {
+    const created = await call<AsaasCheckoutResponse>('/checkouts', {
+      method: 'POST',
+      body: JSON.stringify({
+        billingTypes: ['CREDIT_CARD'],
+        chargeTypes: ['RECURRENT'],
+        minutesToExpire: CHECKOUT_MINUTES_TO_EXPIRE,
+        externalReference: input.externalReference,
+        callback: {
+          successUrl: input.successUrl,
+          cancelUrl: input.cancelUrl,
+          expiredUrl: input.expiredUrl,
+        },
+        items: [
+          {
+            name: `Cantina ${input.planName}`.slice(0, ITEM_NAME_MAX),
+            description: 'Assinatura mensal. Nada é cobrado durante o teste grátis.',
+            imageBase64: CHECKOUT_ITEM_IMAGE_BASE64,
+            quantity: 1,
+            value: toReais(input.amountCents),
+          },
+        ],
+        customerData: {
+          name: input.customer.name,
+          cpfCnpj: input.customer.document,
+          email: input.customer.email,
+          phone: input.customer.phone,
+        },
+        subscription: {
+          cycle: CYCLE,
+          nextDueDate: input.firstChargeDate,
+        },
+      }),
+    });
+
+    return { providerCheckoutId: created.id, checkoutUrl: created.link ?? null };
   },
 
   async cancelSubscription(providerSubscriptionId: string): Promise<void> {
@@ -215,14 +262,18 @@ export const asaasProvider: BillingProvider = {
     }
 
     const occurred = body.payment?.dateCreated ?? body.dateCreated;
+    const subjectId =
+      body.payment?.id ?? body.checkout?.id ?? body.subscription?.id ?? 'sem-referencia';
 
     return {
       // O Asaas manda `id` do evento nas versões novas. Sem ele, a combinação
-      // evento + pagamento é estável o bastante para a idempotência.
-      providerEventId: body.id ?? `${body.event}:${body.payment?.id ?? 'sem-pagamento'}`,
+      // evento + objeto afetado é estável o bastante para a idempotência.
+      providerEventId: body.id ?? `${body.event}:${subjectId}`,
       type,
       providerSubscriptionId: body.payment?.subscription ?? body.subscription?.id ?? null,
       providerInvoiceId: body.payment?.id ?? null,
+      providerCheckoutId: body.checkout?.id ?? body.subscription?.checkoutSession ?? null,
+      providerCustomerId: body.checkout?.customer ?? body.subscription?.customer ?? null,
       amountCents: toCents(body.payment?.value),
       occurredAt: occurred ? new Date(occurred) : new Date(),
     };

@@ -28,12 +28,8 @@ export interface CreateSubscriptionInput {
   providerCustomerId: string;
   planCode: string;
   amountCents: number;
-  /**
-   * `PIX` ou `BOLETO` no Asaas; cartão exige tokenização à parte.
-   * `UNDEFINED`: quem paga escolhe na própria página do provedor — é o que
-   * o cadastro público usa, porque não coleta cartão (D-cadastro-trial).
-   */
-  billingType: 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'UNDEFINED';
+  /** `PIX` ou `BOLETO` no Asaas; cartão exige tokenização à parte. */
+  billingType: 'PIX' | 'BOLETO' | 'CREDIT_CARD';
   nextDueDate: string;
 }
 
@@ -41,12 +37,32 @@ export interface BillingSubscription {
   providerSubscriptionId: string;
   status: 'active' | 'past_due' | 'canceled';
   currentPeriodEnd: Date | null;
-  /**
-   * Link da PRIMEIRA fatura, hospedado pelo provedor — nulo quando o
-   * gateway ainda não gerou nenhuma (só existe se `nextDueDate` for hoje).
-   * É o que o cadastro público devolve como `checkoutUrl`; a assinatura do
-   * painel (`billing.service.ts`) nunca lê este campo.
-   */
+}
+
+/**
+ * Checkout hospedado que cadastra o cartão e agenda a assinatura.
+ *
+ * É o caminho do teste grátis: a pessoa digita o cartão na página do
+ * provedor, o cartão é validado, e a primeira cobrança só acontece em
+ * `firstChargeDate`. Nada é cobrado no cadastro.
+ */
+export interface CreateRecurringCheckoutInput {
+  /** Volta no webhook do checkout — é o `tenant_id` daqui. */
+  externalReference: string;
+  planName: string;
+  /** Valor de CADA ciclo, a partir de `firstChargeDate`. */
+  amountCents: number;
+  /** `AAAA-MM-DD`. Precisa ser futura: vencimento hoje cobra na hora. */
+  firstChargeDate: string;
+  customer: { name: string; document: string; email: string; phone: string };
+  successUrl: string;
+  cancelUrl: string;
+  expiredUrl: string;
+}
+
+export interface RecurringCheckout {
+  providerCheckoutId: string;
+  /** Nulo sem gateway: não existe página para mandar a pessoa. */
   checkoutUrl: string | null;
 }
 
@@ -54,7 +70,9 @@ export type BillingEventType =
   | 'payment.confirmed'
   | 'payment.overdue'
   | 'payment.refunded'
-  | 'subscription.canceled';
+  | 'subscription.canceled'
+  | 'checkout.completed'
+  | 'subscription.created';
 
 export interface BillingEvent {
   /** Chave de idempotência do webhook — vira `webhook_events.provider_event_id`. */
@@ -62,6 +80,9 @@ export interface BillingEvent {
   type: BillingEventType;
   providerSubscriptionId: string | null;
   providerInvoiceId: string | null;
+  /** Presente nos eventos de checkout e na assinatura nascida de um checkout. */
+  providerCheckoutId: string | null;
+  providerCustomerId: string | null;
   amountCents: number | null;
   occurredAt: Date;
 }
@@ -70,6 +91,7 @@ export interface BillingProvider {
   readonly name: string;
   createCustomer(input: CreateCustomerInput): Promise<BillingCustomer>;
   createSubscription(input: CreateSubscriptionInput): Promise<BillingSubscription>;
+  createRecurringCheckout(input: CreateRecurringCheckoutInput): Promise<RecurringCheckout>;
   cancelSubscription(providerSubscriptionId: string): Promise<void>;
   /** Valida o segredo do webhook antes de qualquer parsing. */
   verifyWebhook(headers: Record<string, string | undefined>): boolean;
@@ -108,9 +130,12 @@ const manualProvider: BillingProvider = {
       providerSubscriptionId: `manual-sub-${Date.now().toString(36)}`,
       status: 'active',
       currentPeriodEnd: end,
-      // Sem gateway não existe página de checkout nenhuma para linkar.
-      checkoutUrl: null,
     };
+  },
+
+  async createRecurringCheckout() {
+    // Sem gateway não existe página de checkout nenhuma para linkar.
+    return { providerCheckoutId: `manual-chk-${Date.now().toString(36)}`, checkoutUrl: null };
   },
 
   async cancelSubscription() {
